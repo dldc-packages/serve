@@ -24,7 +24,7 @@ export function createHandler(
       const request = await getRequest(base, req, res);
       const zenContext = ZenContext.fromRequest(request);
       const zenResponse = await middleware(zenContext, async () => {
-        throw new errors.UndiciError('No response was returned from the app');
+        throw new errors.UndiciError('Server did not respond');
       });
       return zenResponse;
     } catch (error) {

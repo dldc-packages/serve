@@ -3,11 +3,7 @@ import { ReadableStream } from 'node:stream/web';
 import type { Writable } from 'stream';
 import { Request, RequestInit, Response } from 'undici';
 
-export async function getRequest(
-  base: string,
-  req: IncomingMessage,
-  res: ServerResponse
-): Promise<Request> {
+export async function getRequest(base: string, req: IncomingMessage, res: ServerResponse): Promise<Request> {
   const url = new URL(`${base}${req.url}`);
   const headers = req.headers as Record<string, string>;
   const controller = new AbortController();
