@@ -1,5 +1,5 @@
-import { HttpError, HttpErrors, Middleware } from '../core';
-import { LoggerConsumer } from '../logger';
+import { HttpError, HttpErrors, Middleware } from '../core/mod';
+import { LoggerConsumer } from '../logger/mod';
 
 export type ErrorToHttpErrorOptions = {
   logOnError?: boolean;

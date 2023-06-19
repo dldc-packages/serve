@@ -13,7 +13,7 @@ import {
   compose,
   createServer,
   json,
-} from '../src';
+} from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 function JsonPackage() {

@@ -1,5 +1,5 @@
-import { HttpError, Middleware } from '../core';
-import { LoggerConsumer } from '../logger';
+import { HttpError, Middleware } from '../core/mod';
+import { LoggerConsumer } from '../logger/mod';
 import { json } from './json';
 
 export function HttpErrorToJsonResponse(): Middleware {

@@ -2,7 +2,7 @@ import { Readable } from 'node:stream';
 import zlib from 'node:zlib';
 import { ReadableStream } from 'stream/web';
 import { Headers, Response } from 'undici';
-import { HttpHeader, HttpStatus, ZenResponse } from '../core';
+import { HttpHeader, HttpStatus, ZenResponse } from '../core/mod';
 import { ContentEncoding } from './ContentEnconding';
 
 /**

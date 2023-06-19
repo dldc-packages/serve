@@ -1,7 +1,7 @@
 import { ResponseInit } from 'undici';
 import { sanitize as defaultSanitize } from 'zenjson';
-import { ZenContext, ZenResponse } from '../core';
-import { json } from '../json';
+import { ZenContext, ZenResponse } from '../core/mod';
+import { json } from '../json/mod';
 import { ZenjsonConfig } from './ZenjsonParser';
 
 interface IOptions extends ResponseInit {

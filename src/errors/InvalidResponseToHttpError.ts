@@ -1,5 +1,5 @@
-import { HttpErrors, Middleware, ZenResponse } from '../core';
-import { LoggerConsumer } from '../logger';
+import { HttpErrors, Middleware, ZenResponse } from '../core/mod';
+import { LoggerConsumer } from '../logger/mod';
 
 /**
  * Return a Valid Repsonse or throw an HttpError

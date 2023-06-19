@@ -1,7 +1,5 @@
-// import { compose, createServer } from '../src';
-
 import { expect, test } from 'vitest';
-import { Compression, compose, createServer, json } from '../src';
+import { Compression, compose, createServer, json } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 test('gzip', async () => {

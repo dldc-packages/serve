@@ -5,4 +5,4 @@ export const ContentEncoding = {
   Identity: 'identity',
 } as const;
 
-export type ContentEncoding = typeof ContentEncoding[keyof typeof ContentEncoding];
+export type ContentEncoding = (typeof ContentEncoding)[keyof typeof ContentEncoding];

@@ -1,4 +1,4 @@
-import { HttpError, Middleware, ZenResponse } from '../core';
+import { HttpError, Middleware, ZenResponse } from '../core/mod';
 
 /**
  * Handle HttpError and respond with a Text reponse

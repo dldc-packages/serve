@@ -1,4 +1,4 @@
-import { createKey } from '../core';
+import { createKey } from '../core/mod';
 
 export type Logger = {
   log(...data: Array<any>): void;

@@ -8,7 +8,7 @@ import {
   compose,
   createServer,
   noContent,
-} from '../src';
+} from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 test('create a server without crashing', () => {

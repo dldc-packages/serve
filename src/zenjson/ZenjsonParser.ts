@@ -1,6 +1,6 @@
 import * as zen from 'zenjson';
-import { Middleware, createKey } from '../core';
-import { GetJsonBodyKeyConsumer } from '../json';
+import { Middleware, createKey } from '../core/mod';
+import { GetJsonBodyKeyConsumer } from '../json/mod';
 
 export type GetZenjsonBody = () => Promise<any>;
 

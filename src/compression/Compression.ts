@@ -1,4 +1,4 @@
-import { HttpHeader, Middleware, createKey } from '../core';
+import { HttpHeader, Middleware, createKey } from '../core/mod';
 import { ContentEncoding } from './ContentEnconding';
 import { compress } from './compress';
 
