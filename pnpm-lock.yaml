@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   erreur:
-    specifier: 3.0.0-12
-    version: 3.0.0-12
+    specifier: 3.0.0-13
+    version: 3.0.0-13
   miid:
     specifier: ^6.0.5
     version: 6.0.5
@@ -1392,8 +1392,8 @@ packages:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
     dev: true
 
-  /erreur@3.0.0-12:
-    resolution: {integrity: sha512-v3VERU5/wy9Q8klexMC/HSyD7Wgh/UwUZkJbbaedlUo0Cw3BTJdMrKG8snj3CkyciPOIl1NKm+qPkjnhGSPvzQ==}
+  /erreur@3.0.0-13:
+    resolution: {integrity: sha512-Ahoe46u9Moa1IlVLlwjOIGHaWbrY3TAf4r8Gjr6jmJiPlJsyPuiApLKHZ/4X3KVNLugdCQ2iNi00vqTYO1fuzA==}
     dependencies:
       staack: 2.0.1
     transitivePeerDependencies:
