@@ -1,58 +1,57 @@
-import { Erreur, Key, MessageKey, createErreurType } from 'erreur';
-import { HttpStatus, HttpStatusCode, HttpStatusMessage, HttpStatusName } from './HttpStatus';
+export const TODO = true;
 
-export interface IHttpError {
-  name: HttpStatusName;
-  code: HttpStatusCode;
-  message: HttpStatusMessage;
-}
+// export interface IHttpError {
+//   name: HttpStatusName;
+//   code: HttpStatusCode;
+//   message: HttpStatusMessage;
+// }
 
-export const HttpErrorType = createErreurType<IHttpError>({ name: 'HttpError' });
+// export const HttpErrorType = createErreurType<IHttpError>({ name: 'HttpError' });
 
-export interface IUnauthorized {
-  reason?: string;
-}
+// export interface IUnauthorized {
+//   reason?: string;
+// }
 
-export const Unauthorized: Key<IUnauthorized> = createErreurType<IUnauthorized>({ name: 'Unauthorized' });
+// export const Unauthorized: Key<IUnauthorized> = createErreurType<IUnauthorized>({ name: 'Unauthorized' });
 
-// export const HttpError = {
-//   create: createHttpError,
-//   NotAcceptable: { create: createNotAcceptable },
-//   BadRequest: { create: createBadRequest },
-// };
+// // export const HttpError = {
+// //   create: createHttpError,
+// //   NotAcceptable: { create: createNotAcceptable },
+// //   BadRequest: { create: createBadRequest },
+// // };
 
-function createHttpError(
-  parent: null | Erreur,
-  codeOrName: HttpStatusCode | HttpStatusName = 500,
-  message?: HttpStatusMessage
-): Erreur {
-  const code: HttpStatusCode = typeof codeOrName === 'number' ? codeOrName : HttpStatus.fromName(codeOrName).code;
-  const status = HttpStatus.fromCode(code);
-  return HttpErrorType.extends(parent, { code, name: status.name, message: message ?? status.message });
+// function createHttpError(
+//   parent: null | Erreur,
+//   codeOrName: HttpStatusCode | HttpStatusName = 500,
+//   message?: HttpStatusMessage
+// ): Erreur {
+//   const code: HttpStatusCode = typeof codeOrName === 'number' ? codeOrName : HttpStatus.fromName(codeOrName).code;
+//   const status = HttpStatus.fromCode(code);
+//   return HttpErrorType.extends(parent, { code, name: status.name, message: message ?? status.message });
 
-  const base = parent ?? Erreur.create();
-  return base
-    .with(HttpErrorKey.Provider({ code, name: status.name, message: message ?? status.message }))
-    .withGetMessage((self) => {
-      const prev = self.get(MessageKey.Consumer);
-      if (!prev) {
-        return `${code} ${status.message}`;
-      }
-      return `${code} ${status.message}: ${prev}`;
-    });
-}
+//   const base = parent ?? Erreur.create();
+//   return base
+//     .with(HttpErrorKey.Provider({ code, name: status.name, message: message ?? status.message }))
+//     .withGetMessage((self) => {
+//       const prev = self.get(MessageKey.Consumer);
+//       if (!prev) {
+//         return `${code} ${status.message}`;
+//       }
+//       return `${code} ${status.message}: ${prev}`;
+//     });
+// }
 
-function createNotAcceptable(message?: HttpStatusMessage): Erreur {
-  return createHttpError(null, 'NotAcceptable', message);
-}
+// function createNotAcceptable(message?: HttpStatusMessage): Erreur {
+//   return createHttpError(null, 'NotAcceptable', message);
+// }
 
-function createBadRequest(message?: HttpStatusMessage): Erreur {
-  return createHttpError(null, 'BadRequest', message);
-}
+// function createBadRequest(message?: HttpStatusMessage): Erreur {
+//   return createHttpError(null, 'BadRequest', message);
+// }
 
-function createUnauthorized(reason?: string): Erreur {
-  return createHttpError(null, 'Unauthorized', `Reason: ${reason}`);
-}
+// function createUnauthorized(reason?: string): Erreur {
+//   return createHttpError(null, 'Unauthorized', `Reason: ${reason}`);
+// }
 
 // interface IForbidden extends IHttpError {
 //   reason?: string;

@@ -1,6 +1,5 @@
-import { HttpError, Middleware } from '../core/mod';
+import { Middleware } from '../core/mod';
 import { LoggerConsumer } from '../logger/mod';
-import { json } from './json';
 
 export function HttpErrorToJsonResponse(): Middleware {
   return async (ctx, next) => {
@@ -8,12 +7,14 @@ export function HttpErrorToJsonResponse(): Middleware {
     try {
       return await next(ctx);
     } catch (error) {
-      const httpError = HttpError.match(error);
-      if (httpError) {
-        logger.error(error);
-        return json(httpError, { status: httpError.code });
-      }
-      throw error;
+      logger.error('TODO');
+      throw new Error('TODO');
+      // const httpError = HttpError.match(error);
+      // if (httpError) {
+      //   logger.error(error);
+      //   return json(httpError, { status: httpError.code });
+      // }
+      // throw error;
     }
   };
 }
