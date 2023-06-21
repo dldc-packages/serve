@@ -74,14 +74,14 @@ const ALL_STATUS = {
   509: { message: 'Bandwidth Limit Exceeded', name: 'BandwidthLimitExceeded' },
   510: { message: 'Not Extended', name: 'NotExtended' },
   511: { message: 'Network Authentication Required', name: 'NetworkAuthenticationRequired' },
-};
+} as const;
 
 const ALL_STATUS_BY_CODE: { [K in HttpStatusCode]: HttpStatusObject } = Object.fromEntries(
-  Object.entries(ALL_STATUS).map(([code, infos]) => [code, { code, ...infos }])
+  Object.entries(ALL_STATUS).map(([code, infos]) => [code, { code: parseInt(code), ...infos }])
 ) as any;
 
 const ALL_STATUS_BY_NAME: { [K in HttpStatusName]: HttpStatusObject } = Object.fromEntries(
-  Object.entries(ALL_STATUS).map(([code, infos]) => [infos.name, { code, ...infos }])
+  Object.entries(ALL_STATUS).map(([code, infos]) => [infos.name, { code: parseInt(code), ...infos }])
 ) as any;
 
 export const HttpStatus = {

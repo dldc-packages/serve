@@ -1,7 +1,7 @@
 import { Headers, ResponseInit } from 'undici';
-import { ZenResponse, createKey } from '../core/mod';
+import { Key, ZenResponse } from '../core/mod';
 
-const JsonKey = createKey<unknown>({ name: 'Json' });
+const JsonKey = Key.create<unknown>('Json');
 
 export function json<Data = unknown>(data: Data, init: number | ResponseInit = {}): ZenResponse {
   const responseInit = typeof init === 'number' ? { status: init } : init;

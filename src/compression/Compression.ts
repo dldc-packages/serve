@@ -1,4 +1,5 @@
-import { HttpHeader, Middleware, createKey } from '../core/mod';
+import { Key } from 'staack';
+import { HttpHeader, Middleware } from '../core/mod';
 import { ContentEncoding } from './ContentEnconding';
 import { compress } from './compress';
 
@@ -7,7 +8,7 @@ export interface ICompression {
   readonly usedEncoding: null | readonly ContentEncoding[];
 }
 
-export const CompressionKey = createKey<ICompression>({ name: 'Compress' });
+export const CompressionKey = Key.create<ICompression>('Compress');
 export const CompressConsumer = CompressionKey.Consumer;
 
 /**

@@ -1,10 +1,11 @@
+import { Key } from 'staack';
 import * as zen from 'zenjson';
-import { Middleware, createKey } from '../core/mod';
+import { Middleware } from '../core/mod';
 import { GetJsonBodyKeyConsumer } from '../json/mod';
 
 export type GetZenjsonBody = () => Promise<any>;
 
-export const GetZenjsonBodyKey = createKey<GetZenjsonBody>({ name: 'ZenjsonParser' });
+export const GetZenjsonBodyKey = Key.create<GetZenjsonBody>('ZenjsonParser');
 export const GetZenjsonBodyKeyConsumer = GetZenjsonBodyKey.Consumer;
 
 interface IZenjsonConfig {
@@ -12,7 +13,7 @@ interface IZenjsonConfig {
   restore?: typeof zen.restore;
 }
 
-export const ZenjsonConfig = createKey<IZenjsonConfig>({ name: 'ZenjsonConfig' });
+export const ZenjsonConfig = Key.create<IZenjsonConfig>('ZenjsonConfig');
 
 export function ZenjsonParser(options: IZenjsonConfig = {}): Middleware {
   const restore = options.restore ?? zen.restore;

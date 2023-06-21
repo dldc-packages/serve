@@ -1,4 +1,4 @@
-export { Stack, createKey, type Key, type KeyConsumer, type KeyProvider, type KeyProviderFn } from 'miid';
+export { Key, type KeyConsumer, type KeyProvider, type KeyProviderFn } from 'staack';
 export * from './HttpError';
 export * from './HttpHeaders';
 export * from './HttpMethod';

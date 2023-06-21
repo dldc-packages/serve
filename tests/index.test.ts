@@ -1,5 +1,14 @@
 import { expect, test } from 'vitest';
-import { HttpMethod, ZenResponse, createServer, noContent } from '../src/mod';
+import {
+  ErrorToHttpError,
+  HttpErrorToTextResponse,
+  HttpMethod,
+  NotFound,
+  ZenResponse,
+  compose,
+  createServer,
+  noContent,
+} from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 test('create a server without crashing', () => {
@@ -92,40 +101,40 @@ test('head request return 204 & empty body', async () => {
   await close();
 });
 
-// test('throw HttpError return an error', async () => {
-//   const server = createServer(
-//     compose(HttpErrorToTextResponse(), () => {
-//       throw HttpErrors.NotFound.instantiate();
-//     })
-//   );
-//   const { close, url, fetch } = await mountServer(server);
-//   const res = await fetch(url);
-//   expect(res).toMatchInlineSnapshot(`
-//     HTTP/1.1 404 Not Found
-//     Connection: close
-//     Content-Type: text/plain;charset=UTF-8
-//     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-//     Transfer-Encoding: chunked
-//   `);
-//   expect(await res.text()).toEqual('Error 404 Not Found');
-//   await close();
-// });
+test('throw HttpError return an error', async () => {
+  const server = createServer(
+    compose(HttpErrorToTextResponse(), () => {
+      throw NotFound.create();
+    })
+  );
+  const { close, url, fetch } = await mountServer(server);
+  const res = await fetch(url);
+  expect(res).toMatchInlineSnapshot(`
+    HTTP/1.1 404 Not Found
+    Connection: close
+    Content-Type: text/plain;charset=UTF-8
+    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+    Transfer-Encoding: chunked
+  `);
+  expect(await res.text()).toEqual('Error 404 Not Found');
+  await close();
+});
 
-// test('throw return an error', async () => {
-//   const server = createServer(
-//     compose(HttpErrorToTextResponse(), ErrorToHttpError(), () => {
-//       throw new Error('Oops');
-//     })
-//   );
-//   const { close, url, fetch } = await mountServer(server);
-//   const res = await fetch(url);
-//   expect(res).toMatchInlineSnapshot(`
-//     HTTP/1.1 500 Internal Server Error
-//     Connection: close
-//     Content-Type: text/plain;charset=UTF-8
-//     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-//     Transfer-Encoding: chunked
-//   `);
-//   expect(await res.text()).toEqual('Error 500 Internal Server Error: Oops');
-//   await close();
-// });
+test('throw return an error', async () => {
+  const server = createServer(
+    compose(HttpErrorToTextResponse(), ErrorToHttpError(), () => {
+      throw new Error('Oops');
+    })
+  );
+  const { close, url, fetch } = await mountServer(server);
+  const res = await fetch(url);
+  expect(res).toMatchInlineSnapshot(`
+    HTTP/1.1 500 Internal Server Error
+    Connection: close
+    Content-Type: text/plain;charset=UTF-8
+    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+    Transfer-Encoding: chunked
+  `);
+  expect(await res.text()).toEqual('Error 500 Oops');
+  await close();
+});

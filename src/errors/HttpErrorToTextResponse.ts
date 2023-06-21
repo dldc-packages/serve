@@ -1,4 +1,5 @@
-import { Middleware } from '../core/mod';
+import { Erreur } from 'erreur';
+import { HttpError, Middleware, ZenResponse } from '../core/mod';
 
 /**
  * Handle HttpError and respond with a Text reponse
@@ -8,11 +9,11 @@ export function HttpErrorToTextResponse(): Middleware {
     try {
       return await next(ctx);
     } catch (error) {
-      console.error('TODO');
-      // const httpError = HttpError.match(error);
-      // if (httpError) {
-      //   return ZenResponse.create(`Error ${httpError.code} ${httpError.message}`, { status: httpError.code });
-      // }
+      const err = Erreur.fromUnknown(error);
+      const httpError = err.get(HttpError.Consumer);
+      if (httpError) {
+        return ZenResponse.create(`Error ${httpError.code} ${httpError.message}`, { status: httpError.code });
+      }
       throw error;
     }
   };

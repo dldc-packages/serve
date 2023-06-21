@@ -6,11 +6,14 @@ settings:
 
 dependencies:
   erreur:
-    specifier: 3.0.0-13
-    version: 3.0.0-13
+    specifier: 3.0.4
+    version: 3.0.4
   miid:
-    specifier: ^6.0.5
-    version: 6.0.5
+    specifier: 7.0.0
+    version: 7.0.0
+  staack:
+    specifier: ^3.0.2
+    version: 3.0.2
   undici:
     specifier: ^5.22.1
     version: 5.22.1
@@ -1392,10 +1395,10 @@ packages:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
     dev: true
 
-  /erreur@3.0.0-13:
-    resolution: {integrity: sha512-Ahoe46u9Moa1IlVLlwjOIGHaWbrY3TAf4r8Gjr6jmJiPlJsyPuiApLKHZ/4X3KVNLugdCQ2iNi00vqTYO1fuzA==}
+  /erreur@3.0.4:
+    resolution: {integrity: sha512-nmi4ZL2bnfSovXJfatEN8dLzcdiqrzO4uqSWBA4ToHRLBdF2THGMNGA+U/JgxvcicX5nYLAOYQ1m+CgSt5+zwA==}
     dependencies:
-      staack: 2.0.1
+      staack: 3.0.2
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@vitest/browser'
@@ -2768,8 +2771,8 @@ packages:
       picomatch: 2.3.1
     dev: true
 
-  /miid@6.0.5:
-    resolution: {integrity: sha512-Yod+tt1x/pMHKnfi2DKCNiONjI9CSFKpzUYuo3aqj2CC2RkO40uyTTTO+Wnpe65bAHtNHQSnXMKJj4CqOH2QBw==}
+  /miid@7.0.0:
+    resolution: {integrity: sha512-aU+PY+GYtMkQCy64E9XlEEMoK9wnIPP3UngcHY53pnne9SuNHbdO01G7vyraV/XgsqwG1QeTqQ1H9eYuBwVSJg==}
     dev: false
 
   /mime-db@1.52.0:
@@ -3634,8 +3637,8 @@ packages:
       whatwg-url: 7.1.0
     dev: true
 
-  /staack@2.0.1:
-    resolution: {integrity: sha512-PxlXU079q0zinhij8mNmIl5DWUeVV01CCHXfGVPFZbAktXCPuRwPRKxYC6rlFdTnpGENvS4FOHzQDpnTD+LVag==}
+  /staack@3.0.2:
+    resolution: {integrity: sha512-sbLqGFfP7Qy0jMqvYyp8anA2RYN4DeKLB+4ZYuARD7sv0qrTD+6kyB45RHlAaqCGlMCh8TupZNECuQsGFPT15A==}
     dependencies:
       '@vitest/coverage-v8': 0.32.0(vitest@0.32.0)
       vitest: 0.32.0

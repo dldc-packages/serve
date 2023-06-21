@@ -1,12 +1,11 @@
-import type { KeyProvider, StackInternal } from 'miid';
-import { Stack, createKey } from 'miid';
+import { Key, Staack, StaackCoreValue } from 'staack';
 import { BodyInit, Headers, Response, ResponseInit } from 'undici';
 
-const BodyKey = createKey<BodyInit>({ name: 'Body' });
-const HeadersKey = createKey<Headers>({ name: 'Headers' });
-const StatusKey = createKey<number>({ name: 'Status' });
-const StatusTextKey = createKey<string>({ name: 'StatusText' });
-const RedirectKey = createKey<{ url: string; status: number }>({ name: 'Redirect' });
+const BodyKey = Key.create<BodyInit>('Body');
+const HeadersKey = Key.create<Headers>('Headers');
+const StatusKey = Key.create<number>('Status');
+const StatusTextKey = Key.create<string>('StatusText');
+const RedirectKey = Key.create<{ url: string; status: number }>('Redirect');
 
 // import { sanitize } from "zenjson";
 // const ZenjsonKey = createKey<unknown>({ name: "Zenjson" });
@@ -23,7 +22,7 @@ const RedirectKey = createKey<{ url: string; status: number }>({ name: 'Redirect
 //   return ZenResponse.json(sanitize(data), init).with(ZenjsonKey.Provider(data));
 // }
 
-export class ZenResponse extends Stack {
+export class ZenResponse extends Staack {
   static create(body?: BodyInit | null, init?: ResponseInit): ZenResponse {
     const providers = [
       HeadersKey.Provider(new Headers(init?.headers)),
@@ -48,8 +47,8 @@ export class ZenResponse extends Stack {
   static StatusTextKey = StatusTextKey;
   static RedirectKey = RedirectKey;
 
-  private constructor(internal: StackInternal<ZenResponse> | null = null) {
-    super(internal);
+  protected instantiate(staackCore: StaackCoreValue): this {
+    return new ZenResponse(staackCore) as any;
   }
 
   get body(): BodyInit | null {
@@ -66,10 +65,6 @@ export class ZenResponse extends Stack {
 
   get statusText(): string | undefined {
     return this.get(StatusTextKey.Consumer) ?? undefined;
-  }
-
-  with(...keys: Array<KeyProvider<any>>): ZenResponse {
-    return Stack.applyKeys<ZenResponse>(this, keys, (internal) => new ZenResponse(internal));
   }
 
   /**

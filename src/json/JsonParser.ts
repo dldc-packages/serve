@@ -1,9 +1,9 @@
 import { ContentType, MimeType } from '../content-type/mod';
-import { HttpHeader, HttpMethod, Middleware, ZenResult, createKey } from '../core/mod';
+import { HttpHeader, HttpMethod, Key, Middleware, ZenResult } from '../core/mod';
 
 export type GetJsonBody = () => Promise<any>;
 
-export const GetJsonBodyKey = createKey<GetJsonBody>({ name: 'JsonParser' });
+export const GetJsonBodyKey = Key.create<GetJsonBody>('JsonParser');
 export const GetJsonBodyKeyConsumer = GetJsonBodyKey.Consumer;
 
 export function JsonParser(): Middleware {

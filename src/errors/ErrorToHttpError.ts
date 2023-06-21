@@ -1,4 +1,5 @@
-import { Middleware } from '../core/mod';
+import { Erreur } from 'erreur';
+import { HttpError, InternalServerError, Middleware } from '../core/mod';
 import { LoggerConsumer } from '../mod';
 
 export type ErrorToHttpErrorOptions = {
@@ -13,19 +14,15 @@ export function ErrorToHttpError({ logOnError = true }: ErrorToHttpErrorOptions 
     try {
       return await next(ctx);
     } catch (error) {
+      const err = Erreur.fromUnknown(error);
+      if (err.has(HttpError.Consumer)) {
+        throw err;
+      }
       if (logOnError) {
         const logger = ctx.get(LoggerConsumer);
         logger.error(error);
       }
-      throw new Error('TODO');
-      // if (HttpError.is(error)) {
-      //   throw error;
-      // }
-      // if (logOnError) {
-      //   const logger = ctx.get(LoggerConsumer);
-      //   logger.error(error);
-      // }
-      // throw HttpErrors.Internal.instantiate(error);
+      throw InternalServerError.create(err.message, err);
     }
   };
 }

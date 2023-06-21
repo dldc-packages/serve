@@ -1,115 +1,79 @@
-export const TODO = true;
+import { Erreur, ErreurType } from 'erreur';
+import { HttpStatus, HttpStatusCode, HttpStatusMessage, HttpStatusName } from './HttpStatus';
 
-// export interface IHttpError {
-//   name: HttpStatusName;
-//   code: HttpStatusCode;
-//   message: HttpStatusMessage;
-// }
+export interface IHttpError {
+  name: HttpStatusName;
+  code: HttpStatusCode;
+  message: HttpStatusMessage;
+}
 
-// export const HttpErrorType = createErreurType<IHttpError>({ name: 'HttpError' });
+export const HttpError = ErreurType.defineWithTransform(
+  'HttpError',
+  (codeOrName: HttpStatusCode | HttpStatusName = 500, message?: HttpStatusMessage): IHttpError => {
+    const code: HttpStatusCode = typeof codeOrName === 'number' ? codeOrName : HttpStatus.fromName(codeOrName).code;
+    const status = HttpStatus.fromCode(code);
+    return { code, name: status.name, message: message ?? status.message };
+  },
+  (err, provider, data) => {
+    return err.with(provider).withMessage(`[HttpError] ${data.code} ${data.name}`);
+  }
+);
 
-// export interface IUnauthorized {
-//   reason?: string;
-// }
+export interface IUnauthorized {
+  reason?: string;
+}
 
-// export const Unauthorized: Key<IUnauthorized> = createErreurType<IUnauthorized>({ name: 'Unauthorized' });
+export const Unauthorized = ErreurType.defineWithTransform(
+  'Unauthorized',
+  (reason?: string): IUnauthorized => ({ reason }),
+  (err, provider, data) => {
+    return HttpError.append(err, 'Unauthorized', `(reason: ${data.reason})`).with(provider);
+  }
+);
 
-// // export const HttpError = {
-// //   create: createHttpError,
-// //   NotAcceptable: { create: createNotAcceptable },
-// //   BadRequest: { create: createBadRequest },
-// // };
+export const NotFound = ErreurType.defineEmpty('NotFound', (err, provider) =>
+  HttpError.append(err, 'NotFound').with(provider)
+);
 
-// function createHttpError(
-//   parent: null | Erreur,
-//   codeOrName: HttpStatusCode | HttpStatusName = 500,
-//   message?: HttpStatusMessage
-// ): Erreur {
-//   const code: HttpStatusCode = typeof codeOrName === 'number' ? codeOrName : HttpStatus.fromName(codeOrName).code;
-//   const status = HttpStatus.fromCode(code);
-//   return HttpErrorType.extends(parent, { code, name: status.name, message: message ?? status.message });
+export const NotAcceptable = ErreurType.defineEmpty('NotAcceptable', (err, provider) =>
+  HttpError.append(err, 'NotAcceptable').with(provider)
+);
 
-//   const base = parent ?? Erreur.create();
-//   return base
-//     .with(HttpErrorKey.Provider({ code, name: status.name, message: message ?? status.message }))
-//     .withGetMessage((self) => {
-//       const prev = self.get(MessageKey.Consumer);
-//       if (!prev) {
-//         return `${code} ${status.message}`;
-//       }
-//       return `${code} ${status.message}: ${prev}`;
-//     });
-// }
+export interface IBadRequest {
+  message?: string;
+}
 
-// function createNotAcceptable(message?: HttpStatusMessage): Erreur {
-//   return createHttpError(null, 'NotAcceptable', message);
-// }
+export const BadRequest = ErreurType.defineWithTransform(
+  'BadRequest',
+  (message?: string): IBadRequest => ({ message }),
+  (err, provider, data) => HttpError.append(err, 'BadRequest', data.message).with(provider)
+);
 
-// function createBadRequest(message?: HttpStatusMessage): Erreur {
-//   return createHttpError(null, 'BadRequest', message);
-// }
+export interface IForbidden {
+  reason?: string;
+}
 
-// function createUnauthorized(reason?: string): Erreur {
-//   return createHttpError(null, 'Unauthorized', `Reason: ${reason}`);
-// }
+export const Forbidden = ErreurType.defineWithTransform(
+  'Forbidden',
+  (reason?: string): IForbidden => ({ reason }),
+  (err, provider, data) => {
+    const base = HttpError.append(err, 'Forbidden');
+    const { code, name } = base.getOrFail(HttpError.Consumer);
+    return base.with(provider).withMessage(`[HttpError] ${code} ${name} (${data.reason})`);
+  }
+);
 
-// interface IForbidden extends IHttpError {
-//   reason?: string;
-// }
+export interface IInternalServerError {
+  message?: string;
+  cause?: Erreur;
+}
 
-// interface IInternal extends IHttpError {
-//   cause?: unknown;
-// }
+export const InternalServerError = ErreurType.defineWithTransform(
+  'InternalServerError',
+  (message?: string, cause?: Erreur): IInternalServerError => ({ message, cause }),
+  (err, provider, data) => HttpError.append(err, 'InternalServerError', data.message).with(provider)
+);
 
-// export const HttpError = ErreurType.createWithTransform(
-//   'HttpError',
-//   (code: HttpStatusCode, message?: HttpStatusMessage): IHttpError => {
-//     const codeResolved = HttpStatus.isError(code) ? code : 500;
-//     if (code !== codeResolved) {
-//       console.error(`You passed a non error HTTP code to HttpError (${code}). Using code 500 instead.`);
-//     }
-//     const messageResolved = message || HttpStatus.getMessage(codeResolved);
-//     return { code: codeResolved, message: messageResolved };
-//   },
-//   (data) => `${data.code} ${data.message}`
-// );
-
-// export const HttpErrors = {
-//   LengthRequired: ErreurType.createEmpty('LengthRequired').withParent(() => HttpError.instantiate(411)),
-//   NotAcceptable: ErreurType.createWithTransform(
-//     'NotAcceptable',
-//     (info: string): INotAcceptable => ({ code: 406, message: HttpStatus.getMessage(406, info), info })
-//   ).withParent(({ code, message }) => HttpError.instantiate(code, message)),
-//   PayloadTooLarge: ErreurType.createEmpty('PayloadTooLarge').withParent(() => HttpError.instantiate(413)),
-//   NotFound: ErreurType.createEmpty('NotFound').withParent(() => HttpError.instantiate(404)),
-//   BadRequest: ErreurType.createWithTransform(
-//     'BadRequest',
-//     (info: string): IBadRequest => ({ code: 400, message: HttpStatus.getMessage(400, info), info })
-//   ).withParent(({ code, message }) => HttpError.instantiate(code, message)),
-//   ServerDidNotRespond: ErreurType.createEmpty('ServerDidNotRespond', `Server did not respond`).withParent(() =>
-//     HttpError.instantiate(500)
-//   ),
-//   Unauthorized: ErreurType.createWithTransform(
-//     'Unauthorized',
-//     (reason?: string): IUnauthorized => ({ code: 401, message: HttpStatus.getMessage(401, reason), reason })
-//   ).withParent(({ code, message }) => HttpError.instantiate(code, message)),
-//   Forbidden: ErreurType.createWithTransform(
-//     'Forbidden',
-//     (reason?: string): IForbidden => ({ code: 403, message: HttpStatus.getMessage(403, reason), reason })
-//   ).withParent(({ code, message }) => HttpError.instantiate(code, message)),
-//   TooManyRequests: ErreurType.createEmpty('TooManyRequests').withParent(() => HttpError.instantiate(429)),
-//   Internal: ErreurType.createWithTransform(
-//     'Internal',
-//     (cause?: unknown): IInternal => ({ code: 500, message: HttpStatus.getMessage(500), cause }),
-//     (data) => `${data.code} ${data.message}: ${errorToString(data.cause)}`
-//   ).withParent(({ code, message, cause }) => HttpError.instantiate(code, `${message}: ${errorToString(cause)}`)),
-// };
-
-// function errorToString(error: unknown): string {
-//   if (error instanceof Error) {
-//     return error.message;
-//   }
-//   const strValue = typeof error === 'string' ? error : JSON.stringify(error);
-//   const strTruncated = strValue.length > 30 ? `${strValue.slice(0, 30)}...` : strValue;
-//   return strTruncated;
-// }
+export const ServerDidNotRespond = ErreurType.defineEmpty('ServerDidNotRespond', (err, provider) => {
+  return InternalServerError.append(err, `Server did not respond`).with(provider);
+});
