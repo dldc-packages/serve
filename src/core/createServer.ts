@@ -1,7 +1,7 @@
 import { Server, createServer as createHttpServer } from 'node:http';
 import { Middleware } from './compose';
-import { CreateHandlerOptions, createHandler } from './createHandler';
+import { CreateHandlerOptions, createNodeHandler } from './createNodeHandler';
 
 export function createServer(middleware: Middleware, options?: CreateHandlerOptions): Server {
-  return createHttpServer(createHandler(middleware, options));
+  return createHttpServer(createNodeHandler(middleware, options));
 }

@@ -9,7 +9,7 @@ export interface CreateHandlerOptions {
   base?: string;
 }
 
-export function createHandler(
+export function createNodeHandler(
   middleware: Middleware,
   { base = 'http://server.localhost' }: CreateHandlerOptions = {}
 ): RequestListener {
