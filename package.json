@@ -1,6 +1,6 @@
 {
   "name": "zen-serve",
-  "version": "1.0.0-0",
+  "version": "1.0.0-1",
   "description": "Create an HTTP server with Request and Response objects",
   "keywords": [],
   "homepage": "https://github.com/etienne-dldc/zen-serve#readme",
