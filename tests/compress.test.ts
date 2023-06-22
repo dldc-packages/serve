@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
-import { Compression, compose, createServer, json } from '../src/mod';
+import { Compression, compose, createNodeServer, json } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 test('gzip', async () => {
-  const server = createServer(compose(Compression(), () => json({ hello: 'world' })));
+  const server = createNodeServer(compose(Compression(), () => json({ hello: 'world' })));
 
   const { close, url, fetch } = await mountServer(server);
   const res = await fetch(url, {
@@ -22,7 +22,7 @@ test('gzip', async () => {
 });
 
 test('brotli over gzip', async () => {
-  const server = createServer(compose(Compression(), () => json({ hello: 'world' })));
+  const server = createNodeServer(compose(Compression(), () => json({ hello: 'world' })));
   const { close, url, fetch } = await mountServer(server);
   const res = await fetch(url, {
     headers: { 'accept-encoding': 'gzip, br' },
@@ -40,7 +40,7 @@ test('brotli over gzip', async () => {
 });
 
 test('deflate', async () => {
-  const server = createServer(compose(Compression(), () => json({ hello: 'world' })));
+  const server = createNodeServer(compose(Compression(), () => json({ hello: 'world' })));
   const { close, url, fetch } = await mountServer(server);
   const res = await fetch(url, {
     headers: { 'accept-encoding': 'deflate' },

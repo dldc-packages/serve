@@ -77,3 +77,13 @@ export const InternalServerError = ErreurType.defineWithTransform(
 export const ServerDidNotRespond = ErreurType.defineEmpty('ServerDidNotRespond', (err, provider) => {
   return InternalServerError.append(err, `Server did not respond`).with(provider);
 });
+
+interface ITooManyRequests {
+  reason?: string;
+}
+
+export const TooManyRequests = ErreurType.defineWithTransform(
+  'TooManyRequests',
+  (reason?: string): ITooManyRequests => ({ reason }),
+  (err, provider, data) => HttpError.append(err, 'TooManyRequests', data.reason).with(provider)
+);

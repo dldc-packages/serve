@@ -5,9 +5,8 @@ import { SetCookie, SetCookies } from './Cookie';
 export function withCookies(res: ZenResponse, cookies: SetCookies): ZenResponse {
   return res.withHeaders((prev) => {
     const nextHeaders = new Headers(prev);
-    cookies.forEach((cookie) => {
-      nextHeaders.append(HttpHeader.SetCookie, SetCookie.toString(cookie));
-    });
+    const nextCookies = [...prev.getSetCookie(), ...cookies.map((cookie) => SetCookie.toString(cookie))];
+    nextHeaders.set(HttpHeader.SetCookie, nextCookies.join(', '));
     return nextHeaders;
   });
 }

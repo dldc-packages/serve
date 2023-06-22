@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
 import { restore } from 'zenjson';
-import { ErrorToHttpError, HttpErrorToZenjsonResponse, compose, createServer, zenjson } from '../src/mod';
+import { ErrorToHttpError, HttpErrorToZenjsonResponse, compose, createNodeServer, zenjson } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 test('Send zenjson response', async () => {
   const date = new Date();
-  const server = createServer(
+  const server = createNodeServer(
     compose(HttpErrorToZenjsonResponse(), ErrorToHttpError(), async () => {
       return zenjson({ date: date, infinity: Infinity, null: null });
     })

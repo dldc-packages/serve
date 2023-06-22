@@ -7,21 +7,6 @@ const StatusKey = Key.create<number>('Status');
 const StatusTextKey = Key.create<string>('StatusText');
 const RedirectKey = Key.create<{ url: string; status: number }>('Redirect');
 
-// import { sanitize } from "zenjson";
-// const ZenjsonKey = createKey<unknown>({ name: "Zenjson" });
-
-// static toRemixResponse(res: ZenResponse): Response {
-//   return new Response(res.body, {
-//     headers: res.headers,
-//     status: res.status,
-//     statusText: res.statusText,
-//   });
-// }
-
-// static zenjson<Data = unknown>(data: Data, init: number | ResponseInit = {}): ZenResponse {
-//   return ZenResponse.json(sanitize(data), init).with(ZenjsonKey.Provider(data));
-// }
-
 export class ZenResponse extends Staack {
   static create(body?: BodyInit | null, init?: ResponseInit): ZenResponse {
     const providers = [

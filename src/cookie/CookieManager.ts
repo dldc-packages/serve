@@ -1,4 +1,4 @@
-import { InternalServerError, Key, Middleware, ZenResponse, ZenResult } from '../core/mod';
+import { Key, Middleware, ZenResult } from '../core/mod';
 import { CreateCookieOptions, SetCookie, SetCookies } from './Cookie';
 import { withCookies } from './withCookies';
 
@@ -31,9 +31,6 @@ export function CookieManager(): Middleware {
       },
     };
     const response = await next(ctx.with(CookieManagerKey.Provider(manager)));
-    if (response instanceof ZenResponse === false) {
-      throw InternalServerError.create(`CookieManager received an invalid response !`);
-    }
     return withCookies(response, cookies);
   };
 }

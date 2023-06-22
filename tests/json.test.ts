@@ -13,7 +13,7 @@ import {
   JsonParser,
   NotFound,
   compose,
-  createServer,
+  createNodeServer,
   json,
 } from '../src/mod';
 import { mountServer } from './utils/mountServer';
@@ -23,7 +23,7 @@ function JsonPackage() {
 }
 
 test('parse JSON body', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(HttpErrorToTextResponse(), ErrorToHttpError(), JsonParser(), async (ctx) => {
       const body = await ctx.getOrFail(GetJsonBodyKeyConsumer)();
       return json({ body });
@@ -49,7 +49,7 @@ test('parse JSON body', async () => {
 });
 
 test('JsonPackage handle JsonResponse', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(JsonPackage(), () => {
       return json({ foo: 'bar' });
     })
@@ -68,7 +68,7 @@ test('JsonPackage handle JsonResponse', async () => {
 });
 
 test('JsonPackage handle no response', async () => {
-  const server = createServer(compose(JsonPackage()));
+  const server = createNodeServer(compose(JsonPackage()));
   const { close, url, fetch } = await mountServer(server);
 
   const res1 = await fetch(url);
@@ -85,7 +85,7 @@ test('JsonPackage handle no response', async () => {
 });
 
 test('JsonPackage convert text to Json', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(JsonPackage(), () => {
       return json('Hello');
     })
@@ -106,7 +106,7 @@ test('JsonPackage convert text to Json', async () => {
 });
 
 test('JsonPackage handle HttpError and convert them to json', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(JsonPackage(), () => {
       throw NotFound.create();
     })
@@ -127,7 +127,7 @@ test('JsonPackage handle HttpError and convert them to json', async () => {
 });
 
 test('JsonPackage handle Error and convert them to json', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(JsonPackage(), () => {
       throw new Error('Oops');
     })
@@ -148,7 +148,7 @@ test('JsonPackage handle Error and convert them to json', async () => {
 });
 
 test('JsonPackage works with Cookies', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(JsonPackage(), CookieManager(), (ctx) => {
       ctx.getOrFail(CookieManagerConsumer).set('token', 'AZERTYUIO');
       return json({ foo: 'bar' });
@@ -171,7 +171,7 @@ test('JsonPackage works with Cookies', async () => {
 });
 
 test('JsonPackage can read Json body', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(JsonPackage(), async (ctx) => {
       const body = await ctx.getOrFail(GetJsonBodyKeyConsumer)();
       return json(body);
@@ -198,7 +198,7 @@ test('JsonPackage can read Json body', async () => {
 });
 
 test('JsonPackage can read Json with Axio PUT', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(JsonPackage(), async (ctx) => {
       const body = await ctx.getOrFail(GetJsonBodyKeyConsumer)();
       return json(body);

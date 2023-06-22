@@ -6,17 +6,17 @@ import {
   NotFound,
   ZenResponse,
   compose,
-  createServer,
+  createNodeServer,
   noContent,
 } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 test('create a server without crashing', () => {
-  expect(() => createServer(() => noContent())).not.toThrowError();
+  expect(() => createNodeServer(() => noContent())).not.toThrowError();
 });
 
 test('simple text response', async () => {
-  const server = createServer(() => ZenResponse.create('Hey'));
+  const server = createNodeServer(() => ZenResponse.create('Hey'));
   const { url, close, fetch } = await mountServer(server);
   const res = await fetch(url);
   expect(await res.text()).toBe('Hey');
@@ -31,7 +31,7 @@ test('simple text response', async () => {
 });
 
 test('send two requests', async () => {
-  const server = createServer(() => ZenResponse.create('Hey'));
+  const server = createNodeServer(() => ZenResponse.create('Hey'));
   const { url, close, fetch } = await mountServer(server);
 
   const res = await fetch(url);
@@ -54,7 +54,7 @@ test('send two requests', async () => {
 });
 
 test('response to arbitrary path', async () => {
-  const server = createServer(() => ZenResponse.create('Hey'));
+  const server = createNodeServer(() => ZenResponse.create('Hey'));
   const { url, close, fetch } = await mountServer(server);
 
   const res = await fetch(`${url}${'/some/path'}`);
@@ -70,7 +70,7 @@ test('response to arbitrary path', async () => {
 });
 
 test('response to post method', async () => {
-  const server = createServer(() => ZenResponse.create('Hey'));
+  const server = createNodeServer(() => ZenResponse.create('Hey'));
   const { url, close, fetch } = await mountServer(server);
 
   const res = await fetch(url, { method: HttpMethod.POST });
@@ -86,7 +86,7 @@ test('response to post method', async () => {
 });
 
 test('head request return 204 & empty body', async () => {
-  const server = createServer(() => noContent());
+  const server = createNodeServer(() => noContent());
   const { url, close, fetch } = await mountServer(server);
 
   const res = await fetch(url, {
@@ -102,7 +102,7 @@ test('head request return 204 & empty body', async () => {
 });
 
 test('throw HttpError return an error', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(HttpErrorToTextResponse(), () => {
       throw NotFound.create();
     })
@@ -121,7 +121,7 @@ test('throw HttpError return an error', async () => {
 });
 
 test('throw return an error', async () => {
-  const server = createServer(
+  const server = createNodeServer(
     compose(HttpErrorToTextResponse(), ErrorToHttpError(), () => {
       throw new Error('Oops');
     })

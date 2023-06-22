@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  chemin:
+    specifier: ^8.0.2
+    version: 8.0.2
   erreur:
     specifier: 3.0.4
     version: 3.0.4
@@ -1113,6 +1116,10 @@ packages:
 
   /check-error@1.0.2:
     resolution: {integrity: sha512-BrgHpW9NURQgzoNyjfq0Wu6VFO6D7IZEmJNdtgNqpzGG8RuNFHt2jQxWlAs4HMe119chBnv+34syEZtc6IhLtA==}
+
+  /chemin@8.0.2:
+    resolution: {integrity: sha512-BChAgRsHpP2qMgCU3NVyt/BppDq4AMPxl8O/9OJ78MFemh7HE9Hom3K3LyzSCMt1TYDgxPJ/VEXtmdRklMhAhw==}
+    dev: false
 
   /chokidar@3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
