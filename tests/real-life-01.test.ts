@@ -31,7 +31,6 @@ test('real life', async () => {
       CookieManager(),
       Router(
         AllowedMethodsRoutes([
-          // Route.UPGRADE('connect', HandleWebsocket),
           Route.GET('login', () => {
             return ZenResponse.create('TODO');
           }),
