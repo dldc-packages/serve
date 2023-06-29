@@ -1,15 +1,15 @@
 {
-  "name": "zen-serve",
+  "name": "@dldc/serve",
   "version": "1.0.0-2",
   "description": "Create an HTTP server with Request and Response objects",
   "keywords": [],
-  "homepage": "https://github.com/etienne-dldc/zen-serve#readme",
+  "homepage": "https://github.com/dldc-packages/serve#readme",
   "bugs": {
-    "url": "https://github.com/etienne-dldc/zen-serve/issues"
+    "url": "https://github.com/dldc-packages/serve/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/etienne-dldc/zen-serve.git"
+    "url": "git+https://github.com/dldc-packages/serve.git"
   },
   "license": "MIT",
   "author": "Etienne Dldc <e.deladonchamps@gmail.com>",
