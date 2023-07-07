@@ -15,7 +15,7 @@ export function InvalidResponseToHttpError(): Middleware {
     }
     if (response instanceof ZenResponse === false) {
       const err = InternalServerError.create(
-        `The returned response is not valid (does not inherit the ZenResponse class)`
+        `The returned response is not valid (does not inherit the ZenResponse class)`,
       );
       logger.info(response);
       logger.error(err);

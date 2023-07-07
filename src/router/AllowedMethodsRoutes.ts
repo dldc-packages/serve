@@ -11,16 +11,19 @@ export function AllowedMethodsRoutes(routes: Routes): Routes {
   const updatedRoutes = new Map<Route, Route>();
   byPattern.forEach(({ pattern, routes }) => {
     if (pattern !== null) {
-      const allowedMethods = routes.reduce<Set<HttpMethod> | null>((acc, route) => {
-        if (route.isFallback) {
+      const allowedMethods = routes.reduce<Set<HttpMethod> | null>(
+        (acc, route) => {
+          if (route.isFallback) {
+            return acc;
+          }
+          if (acc === null || route.method === null) {
+            return null;
+          }
+          acc.add(route.method);
           return acc;
-        }
-        if (acc === null || route.method === null) {
-          return null;
-        }
-        acc.add(route.method);
-        return acc;
-      }, new Set<HttpMethod>([HttpMethod.OPTIONS]));
+        },
+        new Set<HttpMethod>([HttpMethod.OPTIONS]),
+      );
       const methods = allowedMethods || HttpMethod.__ALL;
       if (methods.size === 1) {
         return;
@@ -34,7 +37,7 @@ export function AllowedMethodsRoutes(routes: Routes): Routes {
         updatedRoutes.set(optionsRoute, newRoute);
       } else {
         result.push(
-          Route.create({ pattern, exact: true, method: HttpMethod.OPTIONS }, AllowedMethodsMiddleware(methods))
+          Route.create({ pattern, exact: true, method: HttpMethod.OPTIONS }, AllowedMethodsMiddleware(methods)),
         );
       }
     }

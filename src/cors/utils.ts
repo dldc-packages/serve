@@ -60,7 +60,7 @@ export interface CorsPreflightConfigResolved extends CorsActualConfigResolved {
 }
 
 export function createActualConfigResolver(
-  config: CorsActualConfig
+  config: CorsActualConfig,
 ): (origin: string | null | undefined) => CorsActualConfigResolved | false {
   const {
     allowOrigin = DEFAULT_ALLOW_ORIGIN,
@@ -81,7 +81,7 @@ export function createActualConfigResolver(
 }
 
 export function createPreflightConfigResolver(
-  config: CorsPreflightConfig
+  config: CorsPreflightConfig,
 ): (origin: string | null | undefined) => CorsPreflightConfigResolved | false {
   const actualResolver = createActualConfigResolver(config);
   return (origin: string | null | undefined): CorsPreflightConfigResolved | false => {

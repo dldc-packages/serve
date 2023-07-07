@@ -12,7 +12,7 @@ export function Router(routes: Routes): Middleware {
         [
           `Warning: Using a Router inside another Router will break 'Allow' header and CORS !`,
           `If you want to group routes together you can use Route.namespace() or the low level Route.create()`,
-        ].join('\n')
+        ].join('\n'),
       );
     }
 

@@ -33,7 +33,7 @@ test('should set the Set-Cookie header using Manager', async () => {
     compose(CookieManager(), (ctx) => {
       ctx.getOrFail(CookieManagerConsumer).set('token', 'T55YTRR55554');
       return noContent();
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
@@ -53,7 +53,7 @@ test('should set two Set-Cookie header using Manager', async () => {
       cookieManager.set('token', 'T55YTRR55554');
       cookieManager.set('user', 'etienne');
       return noContent();
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
@@ -109,7 +109,7 @@ test('Cookie manager should set and delete cookies', async () => {
       manager.set('new-cookie', 'value');
       manager.delete('deleted-cookie');
       return noContent();
-    })
+    }),
   );
 
   const { close, url, fetch } = await mountServer(app);
@@ -132,7 +132,7 @@ test('Cookies should not be set on error response', async () => {
       manager.set('new-cookie', 'value');
       manager.delete('deleted-cookie');
       throw NotFound.create();
-    })
+    }),
   );
   const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url);

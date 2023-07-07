@@ -98,7 +98,7 @@ describe('ContentType.parse', () => {
   test('should throw on invalid parameter format', () => {
     expect(() => ContentType.parse('text/plain; foo="bar')).toThrow(/invalid parameter format/);
     expect(() => ContentType.parse('text/plain; profile=http://localhost; foo=bar')).toThrow(
-      /invalid parameter format/
+      /invalid parameter format/,
     );
     expect(() => ContentType.parse('text/plain; profile=http://localhost')).toThrow(/invalid parameter format/);
   });

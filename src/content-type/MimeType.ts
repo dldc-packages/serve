@@ -328,7 +328,7 @@ const ALL_MIME_TYPES = {
 const ALL_MIME_TYPES_BY_EXTENSION: { [K in MimeTypeExtension]: MimeType } = Object.fromEntries(
   Object.entries(ALL_MIME_TYPES)
     .map(([mime, exts]) => exts.map((ext: string) => [ext, mime]))
-    .flat()
+    .flat(),
 );
 
 export type MimeType = keyof typeof ALL_MIME_TYPES;

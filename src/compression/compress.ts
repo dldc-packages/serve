@@ -29,7 +29,7 @@ export function compress(originalResponse: ZenResponse, encodings: Array<Content
 
 function encodeBodyWithEncodings(
   body: ReadableStream | null,
-  encodings: Array<ContentEncoding>
+  encodings: Array<ContentEncoding>,
 ): ReadableStream | null {
   if (body === null) {
     return null;

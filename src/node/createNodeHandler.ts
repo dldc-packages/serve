@@ -9,7 +9,7 @@ export interface CreateNodeHandlerOptions {
 
 export function createNodeHandler(
   middleware: Middleware,
-  { base = 'http://server.localhost' }: CreateNodeHandlerOptions = {}
+  { base = 'http://server.localhost' }: CreateNodeHandlerOptions = {},
 ): RequestListener {
   const handler = createHandler(middleware);
   return async (req, res) => {

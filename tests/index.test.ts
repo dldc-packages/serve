@@ -105,7 +105,7 @@ test('throw HttpError return an error', async () => {
   const server = createNodeServer(
     compose(HttpErrorToTextResponse(), () => {
       throw NotFound.create();
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
   const res = await fetch(url);
@@ -124,7 +124,7 @@ test('throw return an error', async () => {
   const server = createNodeServer(
     compose(HttpErrorToTextResponse(), ErrorToHttpError(), () => {
       throw new Error('Oops');
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
   const res = await fetch(url);

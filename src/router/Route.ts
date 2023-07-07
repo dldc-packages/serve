@@ -36,7 +36,7 @@ export const Route = {
       (route): Route => ({
         ...route,
         pattern: route.pattern === null ? Chemin.create(pattern) : Chemin.create(pattern, route.pattern),
-      })
+      }),
     );
   },
   group: (middlewares: Middleware | Array<Middleware>, routes: Routes): Routes => {
@@ -58,7 +58,7 @@ function createRoute(
     method?: HttpMethod | null;
     exact?: boolean;
   },
-  middleware: Middleware | Array<Middleware>
+  middleware: Middleware | Array<Middleware>,
 ): Route {
   const patternResolved = typeof pattern === 'string' ? Chemin.parse(pattern) : pattern;
   return {

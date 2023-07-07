@@ -77,11 +77,11 @@ const ALL_STATUS = {
 } as const;
 
 const ALL_STATUS_BY_CODE: { [K in HttpStatusCode]: HttpStatusObject } = Object.fromEntries(
-  Object.entries(ALL_STATUS).map(([code, infos]) => [code, { code: parseInt(code), ...infos }])
+  Object.entries(ALL_STATUS).map(([code, infos]) => [code, { code: parseInt(code), ...infos }]),
 ) as any;
 
 const ALL_STATUS_BY_NAME: { [K in HttpStatusName]: HttpStatusObject } = Object.fromEntries(
-  Object.entries(ALL_STATUS).map(([code, infos]) => [infos.name, { code: parseInt(code), ...infos }])
+  Object.entries(ALL_STATUS).map(([code, infos]) => [infos.name, { code: parseInt(code), ...infos }]),
 ) as any;
 
 export const HttpStatus = {

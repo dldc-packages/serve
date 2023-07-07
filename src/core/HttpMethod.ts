@@ -12,8 +12,8 @@ export type HttpMethod = (typeof ALL_METHODS)[keyof typeof ALL_METHODS];
 
 const ALL_HTTP_METHODS: Set<HttpMethod> = new Set(
   (Object.keys(ALL_METHODS) as Array<keyof typeof ALL_METHODS>).map(
-    (k: keyof typeof ALL_METHODS) => ALL_METHODS[k]
-  ) as any
+    (k: keyof typeof ALL_METHODS) => ALL_METHODS[k],
+  ) as any,
 );
 
 export const HttpMethod = {

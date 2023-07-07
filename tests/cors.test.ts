@@ -20,7 +20,7 @@ describe('CORS: simple / actual requests', () => {
     return createNodeServer(
       compose(CorsActual(config), () => {
         return ZenResponse.create('Hello');
-      })
+      }),
     );
   }
 
@@ -176,7 +176,7 @@ describe('CORS: preflight requests', () => {
           return ZenResponse.create('Hello');
         }
         throw HttpError.create(405);
-      })
+      }),
     );
   }
 
@@ -359,7 +359,7 @@ describe('CorsPackage', () => {
     return createNodeServer(
       compose(CorsActual(config), CorsPreflight(), () => {
         return ZenResponse.create('Hello');
-      })
+      }),
     );
   }
 
@@ -413,7 +413,7 @@ describe('CorsPackage', () => {
     const app = createNodeServer(
       compose(CorsActual(), CorsPreflight(), HttpErrorToTextResponse(), ErrorToHttpError(), () => {
         throw NotFound.create();
-      })
+      }),
     );
     const { url, close, fetch } = await mountServer(app);
     const res = await fetch(url, {
@@ -436,7 +436,7 @@ describe('CorsPackage', () => {
     const app = createNodeServer(
       compose(CorsActual(), CorsPreflight(), () => {
         throw NotFound.create();
-      })
+      }),
     );
     const { url, close, fetch } = await mountServer(app);
     const res = await fetch(url, {

@@ -40,9 +40,9 @@ test('real life', async () => {
           Route.fallback(() => {
             throw NotFound.create();
           }),
-        ])
-      )
-    )
+        ]),
+      ),
+    ),
   );
 
   const { url, close, fetch } = await mountServer(app);

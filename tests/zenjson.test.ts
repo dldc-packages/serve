@@ -8,7 +8,7 @@ test('Send zenjson response', async () => {
   const server = createNodeServer(
     compose(HttpErrorToZenjsonResponse(), ErrorToHttpError(), async () => {
       return zenjson({ date: date, infinity: Infinity, null: null });
-    })
+    }),
   );
 
   const { close, url, fetch } = await mountServer(server);

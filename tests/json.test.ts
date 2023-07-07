@@ -27,7 +27,7 @@ test('parse JSON body', async () => {
     compose(HttpErrorToTextResponse(), ErrorToHttpError(), JsonParser(), async (ctx) => {
       const body = await ctx.getOrFail(GetJsonBodyKeyConsumer)();
       return json({ body });
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
   const res = await fetch(url, {
@@ -52,7 +52,7 @@ test('JsonPackage handle JsonResponse', async () => {
   const server = createNodeServer(
     compose(JsonPackage(), () => {
       return json({ foo: 'bar' });
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
   const res5 = await fetch(url);
@@ -88,7 +88,7 @@ test('JsonPackage convert text to Json', async () => {
   const server = createNodeServer(
     compose(JsonPackage(), () => {
       return json('Hello');
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
 
@@ -109,7 +109,7 @@ test('JsonPackage handle HttpError and convert them to json', async () => {
   const server = createNodeServer(
     compose(JsonPackage(), () => {
       throw NotFound.create();
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
 
@@ -130,7 +130,7 @@ test('JsonPackage handle Error and convert them to json', async () => {
   const server = createNodeServer(
     compose(JsonPackage(), () => {
       throw new Error('Oops');
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
 
@@ -152,7 +152,7 @@ test('JsonPackage works with Cookies', async () => {
     compose(JsonPackage(), CookieManager(), (ctx) => {
       ctx.getOrFail(CookieManagerConsumer).set('token', 'AZERTYUIO');
       return json({ foo: 'bar' });
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
 
@@ -175,7 +175,7 @@ test('JsonPackage can read Json body', async () => {
     compose(JsonPackage(), async (ctx) => {
       const body = await ctx.getOrFail(GetJsonBodyKeyConsumer)();
       return json(body);
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
 
@@ -202,7 +202,7 @@ test('JsonPackage can read Json with Axio PUT', async () => {
     compose(JsonPackage(), async (ctx) => {
       const body = await ctx.getOrFail(GetJsonBodyKeyConsumer)();
       return json(body);
-    })
+    }),
   );
   const { close, url, fetch } = await mountServer(server);
 
