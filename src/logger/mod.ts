@@ -1,4 +1,4 @@
-import { Key } from 'staack';
+import { Key } from '@dldc/stack';
 
 export type Logger = {
   log(...data: Array<any>): void;

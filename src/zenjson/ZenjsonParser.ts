@@ -1,5 +1,5 @@
-import { Key } from 'staack';
-import * as zen from 'zenjson';
+import { Key } from '@dldc/stack';
+import * as zen from '@dldc/zenjson';
 import { Middleware } from '../core/mod';
 import { GetJsonBodyKeyConsumer } from '../json/mod';
 

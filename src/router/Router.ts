@@ -1,4 +1,4 @@
-import { Chemin } from 'chemin';
+import { Chemin } from '@dldc/chemin';
 import { Middleware, ZenResult } from '../core/mod';
 import { FindResult, Route, Routes } from './Route';
 // import { UrlParserConsumer } from '../url-parser';

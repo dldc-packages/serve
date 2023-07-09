@@ -1,4 +1,4 @@
-import { Key } from 'staack';
+import { Key } from '@dldc/stack';
 import { ZenContext } from './ZenContext';
 import { Middleware } from './compose';
 

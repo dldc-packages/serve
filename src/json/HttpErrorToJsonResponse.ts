@@ -1,4 +1,4 @@
-import { Erreur } from 'erreur';
+import { Erreur } from '@dldc/erreur';
 import { HttpError, Middleware } from '../core/mod';
 import { LoggerConsumer } from '../logger/mod';
 import { json } from './json';

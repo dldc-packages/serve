@@ -1,4 +1,4 @@
-import * as miid from 'miid';
+import * as miid from '@dldc/compose';
 import { ZenContext } from './ZenContext';
 import { ZenResponse } from './ZenResponse';
 

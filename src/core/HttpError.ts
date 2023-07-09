@@ -1,4 +1,4 @@
-import { Erreur, ErreurType } from 'erreur';
+import { Erreur, ErreurType } from '@dldc/erreur';
 import { HttpStatus, HttpStatusCode, HttpStatusMessage, HttpStatusName } from './HttpStatus';
 
 export interface IHttpError {

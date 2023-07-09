@@ -1,4 +1,4 @@
-import { Chemin, splitPathname } from 'chemin';
+import { Chemin, splitPathname } from '@dldc/chemin';
 import { HttpMethod, Middleware, compose } from '../core/mod';
 
 export const ROUTE_TOKEN = Symbol.for('__TUMAU_ROUTE_TOKEN__');

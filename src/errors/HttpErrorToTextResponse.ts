@@ -1,4 +1,4 @@
-import { Erreur } from 'erreur';
+import { Erreur } from '@dldc/erreur';
 import { HttpError, Middleware, ZenResponse } from '../core/mod';
 
 /**

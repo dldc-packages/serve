@@ -1,5 +1,5 @@
+import { restore } from '@dldc/zenjson';
 import { expect, test } from 'vitest';
-import { restore } from 'zenjson';
 import { ErrorToHttpError, HttpErrorToZenjsonResponse, compose, createNodeServer, zenjson } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 

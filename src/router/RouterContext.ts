@@ -1,4 +1,4 @@
-import { Chemin } from 'chemin';
+import { Chemin } from '@dldc/chemin';
 import { Key } from '../core/mod';
 
 export interface Params {

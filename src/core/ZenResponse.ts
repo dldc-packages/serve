@@ -1,4 +1,4 @@
-import { Key, Staack, StaackCoreValue } from 'staack';
+import { Key, Staack, StaackCoreValue } from '@dldc/stack';
 import { BodyInit, Headers, Response, ResponseInit } from 'undici';
 
 const BodyKey = Key.create<BodyInit>('Body');

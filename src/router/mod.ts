@@ -1,4 +1,4 @@
-export * from 'chemin';
+export * from '@dldc/chemin';
 export * from './AllowedMethodsRoutes';
 export * from './CorsPreflightRoutes';
 export * from './CorsRoutes';
