@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest';
 import {
   AllowedMethodsRoutes,
+  Chemin,
   Compression,
   CookieManager,
   CorsActual,
@@ -19,6 +20,11 @@ import {
 import { mountServer } from './utils/mountServer';
 
 test('real life', async () => {
+  const ROUTES = {
+    login: Chemin.create('login'),
+    logout: Chemin.create('logout'),
+  };
+
   const app = createNodeServer(
     compose(
       CorsActual(),
@@ -31,10 +37,10 @@ test('real life', async () => {
       CookieManager(),
       Router(
         AllowedMethodsRoutes([
-          Route.GET('login', () => {
+          Route.GET(ROUTES.login, () => {
             return ZenResponse.create('TODO');
           }),
-          Route.GET('logout', () => {
+          Route.GET(ROUTES.logout, () => {
             return ZenResponse.create('TODO');
           }),
           Route.fallback(() => {

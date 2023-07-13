@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@dldc/chemin':
-    specifier: ^8.0.5
-    version: 8.0.5
+    specifier: ^8.0.6
+    version: 8.0.6
   '@dldc/compose':
     specifier: ^7.0.5
     version: 7.0.5
@@ -108,8 +108,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@dldc/chemin@8.0.5:
-    resolution: {integrity: sha512-Stk1BFmLBMLcfrVf0MyC+yIRD8oQNrV268pGKYeSgQ2WRzPcNYN6LeLkfdrIFOKiyoqhlM2WfbqNDo60K88YrQ==}
+  /@dldc/chemin@8.0.6:
+    resolution: {integrity: sha512-Dsr0VH6+xjFgt+wcrqbiCu82bAZ3jSxTJha0qCpnDM2o4NKqlB3JxuBWyId/6lYy8k/sQ1QWve4PBcwj4dLDow==}
     dev: false
 
   /@dldc/compose@7.0.5:
