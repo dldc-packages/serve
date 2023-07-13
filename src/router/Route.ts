@@ -1,11 +1,11 @@
-import { Chemin, splitPathname } from '@dldc/chemin';
+import { Chemin, IChemin, splitPathname } from '@dldc/chemin';
 import { HttpMethod, Middleware, compose } from '../core/mod';
 
 export const ROUTE_TOKEN = Symbol.for('__TUMAU_ROUTE_TOKEN__');
 
 export interface Route {
   [ROUTE_TOKEN]: true;
-  pattern: Chemin | null;
+  pattern: IChemin | null;
   method: HttpMethod | null;
   // ignored if pattern is null
   exact: boolean;
@@ -19,7 +19,7 @@ export type Routes = Array<Route>;
 
 const withMethod =
   (method: HttpMethod) =>
-  (pattern: Chemin | string | null, ...middleware: Array<Middleware>) =>
+  (pattern: IChemin | string | null, ...middleware: Array<Middleware>) =>
     createRoute({ pattern, exact: true, method }, middleware);
 
 export const Route = {
@@ -31,7 +31,7 @@ export const Route = {
   PUT: withMethod(HttpMethod.PUT),
   DELETE: withMethod(HttpMethod.DELETE),
   PATCH: withMethod(HttpMethod.PATCH),
-  namespace: (pattern: Chemin | string, routes: Routes): Routes => {
+  namespace: (pattern: IChemin | string, routes: Routes): Routes => {
     return routes.map(
       (route): Route => ({
         ...route,
@@ -54,7 +54,7 @@ function createRoute(
     exact = true,
   }: {
     isFallback?: boolean;
-    pattern?: Chemin | string | null;
+    pattern?: IChemin | string | null;
     method?: HttpMethod | null;
     exact?: boolean;
   },
@@ -119,7 +119,7 @@ function find(routes: Array<Route>, pathname: string, method: HttpMethod | null)
 }
 
 type GroupResult = {
-  pattern: Chemin | null;
+  pattern: IChemin | null;
   routes: Routes;
 };
 

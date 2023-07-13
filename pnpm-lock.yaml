@@ -6,11 +6,11 @@ settings:
 
 dependencies:
   '@dldc/chemin':
-    specifier: ^8.0.4
-    version: 8.0.4
+    specifier: ^8.0.5
+    version: 8.0.5
   '@dldc/compose':
-    specifier: ^7.0.1
-    version: 7.0.1
+    specifier: ^7.0.5
+    version: 7.0.5
   '@dldc/erreur':
     specifier: ^3.0.6
     version: 3.0.6
@@ -108,12 +108,12 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@dldc/chemin@8.0.4:
-    resolution: {integrity: sha512-FvPy/6a8585ToA9bY8n8oFgMhO++5BIOW0uRlduEjFzoqUB5t3B7eiwkhvs4/U7WpsBFvCp8tRNr1HmAVsghrg==}
+  /@dldc/chemin@8.0.5:
+    resolution: {integrity: sha512-Stk1BFmLBMLcfrVf0MyC+yIRD8oQNrV268pGKYeSgQ2WRzPcNYN6LeLkfdrIFOKiyoqhlM2WfbqNDo60K88YrQ==}
     dev: false
 
-  /@dldc/compose@7.0.1:
-    resolution: {integrity: sha512-BO026t8Wi4nGuNwsMjYugezr27z5iut5sI10RVIQ9RS89UImJ53otWC/3wLU/EKB+Y1h3CPGD6M4L5PWLh6mCw==}
+  /@dldc/compose@7.0.5:
+    resolution: {integrity: sha512-z6y2W+o08Wmkrr9K4TRUQEhgvxp/6eCu2lFVUbIaXQOc/T5QyYLiqocLx0T2sd17tqRbKeRio7CeOMRU4iCirw==}
     dev: false
 
   /@dldc/erreur@3.0.6:

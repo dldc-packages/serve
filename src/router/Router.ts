@@ -1,4 +1,4 @@
-import { Chemin } from '@dldc/chemin';
+import { IChemin } from '@dldc/chemin';
 import { Middleware, ZenResult } from '../core/mod';
 import { FindResult, Route, Routes } from './Route';
 // import { UrlParserConsumer } from '../url-parser';
@@ -29,7 +29,7 @@ export function Router(routes: Routes): Middleware {
       const patterns = pattern ? pattern.extract() : [];
       const params = findResult ? findResult.params : {};
 
-      const has = (chemin: Chemin): boolean => {
+      const has = (chemin: IChemin): boolean => {
         return patterns.indexOf(chemin) >= 0;
       };
 
@@ -39,10 +39,10 @@ export function Router(routes: Routes): Middleware {
         pattern,
         params,
         has,
-        get: <P>(chemin: Chemin<P>) => {
+        get: <P>(chemin: IChemin<P>) => {
           return has(chemin) ? (params as P) : null;
         },
-        getOrFail: <P>(chemin: Chemin<P>) => {
+        getOrFail: <P>(chemin: IChemin<P>) => {
           if (!has(chemin)) {
             throw new Error(`Chemin is not part of the route context !`);
           }
