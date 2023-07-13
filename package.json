@@ -1,6 +1,6 @@
 {
   "name": "@dldc/serve",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Create an HTTP server with Request and Response objects",
   "keywords": [],
   "homepage": "https://github.com/dldc-packages/serve#readme",
