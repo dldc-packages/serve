@@ -87,7 +87,6 @@ export interface FindResult {
 // fins all routes matching the pattern (ignoring methods & upgrade)
 function find(routes: Array<Route>, pathname: string, method: HttpMethod | null): Array<FindResult> {
   const parts = splitPathname(pathname);
-  console.log({ parts });
   return routes
     .map((route, index): FindResult | false => {
       if (route.pattern === null) {
