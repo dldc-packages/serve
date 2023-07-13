@@ -13,7 +13,6 @@ import {
   NotFound,
   Route,
   Router,
-  UrlParser,
   compose,
   createNodeServer,
   json,
@@ -29,7 +28,6 @@ test('real life 2', async () => {
       HttpErrorToJsonResponse(),
       InvalidResponseToHttpError(),
       ErrorToHttpError(),
-      UrlParser(),
       JsonParser(),
       CookieParser(),
       CookieManager(),
@@ -70,7 +68,7 @@ test('real life 2', async () => {
 
   const res3 = await fetch(`${url}/login`, { method: 'post' });
   expect(res3).toMatchInlineSnapshot(`
-    HTTP/1.1 404 Not Found
+    HTTP/1.1 200 OK
     Connection: close
     Content-Encoding: gzip
     Content-Type: application/json; charset=utf-8
@@ -80,12 +78,10 @@ test('real life 2', async () => {
 
   const res4 = await fetch(`${url}/login`, {
     method: 'post',
-    headers: {
-      origin: 'localhost:3000',
-    },
+    headers: { origin: 'localhost:3000' },
   });
   expect(res4).toMatchInlineSnapshot(`
-    HTTP/1.1 404 Not Found
+    HTTP/1.1 200 OK
     Access-Control-Allow-Origin: localhost:3000
     Connection: close
     Content-Encoding: gzip

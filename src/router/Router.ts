@@ -1,8 +1,7 @@
 import { IChemin } from '@dldc/chemin';
+import { URL } from 'node:url';
 import { Middleware, ZenResult } from '../core/mod';
 import { FindResult, Route, Routes } from './Route';
-// import { UrlParserConsumer } from '../url-parser';
-import { UrlParserConsumer } from '../url-parser/mod';
 import { RouterContext, RouterKey } from './RouterContext';
 
 export function Router(routes: Routes): Middleware {
@@ -16,9 +15,9 @@ export function Router(routes: Routes): Middleware {
       );
     }
 
-    const parsedUrl = ctx.getOrFail(UrlParserConsumer);
+    const url = new URL(ctx.request.url);
     const requestMethod = ctx.method;
-    const matchingRoutes = Route.find(routes, parsedUrl.pathname, requestMethod);
+    const matchingRoutes = Route.find(routes, url.pathname, requestMethod);
 
     return handleNext(0);
 

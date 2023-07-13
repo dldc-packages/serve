@@ -9,5 +9,4 @@ export * from './logger/mod';
 export * from './node/mod';
 export * from './rate-limit/mod';
 export * from './router/mod';
-export * from './url-parser/mod';
 export * from './zenjson/mod';
