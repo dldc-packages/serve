@@ -102,9 +102,19 @@ describe('ContentType.parse', () => {
     );
     expect(() => ContentType.parse('text/plain; profile=http://localhost')).toThrow(/invalid parameter format/);
   });
+
+  test('parse weird stuff from unidici', () => {
+    const parsed = ContentType.parse('multipart/form-data; boundary=----formdata-undici-057891035902');
+    expect(parsed).toEqual({
+      type: 'multipart/form-data',
+      parameters: {
+        boundary: '----formdata-undici-057891035902',
+      },
+    });
+  });
 });
 
-describe('ContentType.fomrat', () => {
+describe('ContentType.format', () => {
   test('should format basic type', function () {
     const str = ContentType.format('text/html');
     expect(str).toBe('text/html');

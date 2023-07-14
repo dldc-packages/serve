@@ -3,6 +3,7 @@ import { URL } from 'node:url';
 import { Middleware, ZenResult } from '../core/mod';
 import { FindResult, Route, Routes } from './Route';
 import { RouterContext, RouterKey } from './RouterContext';
+import { SkipRouteKey } from './skipRoute';
 
 export function Router(routes: Routes): Middleware {
   return async (ctx, next): Promise<ZenResult> => {
@@ -65,9 +66,9 @@ export function Router(routes: Routes): Middleware {
       // call the route with next pointing to the middleware after the router
       const result = await findResult.route.middleware(withRouterDataCtx, next);
 
-      // If the match did not return a response
+      // If result has the SkipRoute
       // proceed like if the route didn't match
-      if (result === null) {
+      if (result.has(SkipRouteKey.Consumer)) {
         return handleNext(index + 1);
       }
 
