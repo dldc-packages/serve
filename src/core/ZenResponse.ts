@@ -1,4 +1,4 @@
-import type { StaackCoreValue } from '@dldc/stack';
+import type { TStaackCoreValue } from '@dldc/stack';
 import { Key, Staack } from '@dldc/stack';
 import type { BodyInit, ResponseInit } from 'undici';
 import { Headers, Response } from 'undici';
@@ -34,7 +34,7 @@ export class ZenResponse extends Staack {
   static StatusTextKey = StatusTextKey;
   static RedirectKey = RedirectKey;
 
-  protected instantiate(staackCore: StaackCoreValue): this {
+  protected instantiate(staackCore: TStaackCoreValue): this {
     return new ZenResponse(staackCore) as any;
   }
 

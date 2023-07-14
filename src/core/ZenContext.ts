@@ -1,4 +1,4 @@
-import type { KeyProvider, StaackCoreValue } from '@dldc/stack';
+import type { IKeyProvider, TStaackCoreValue } from '@dldc/stack';
 import { Key, Staack } from '@dldc/stack';
 import type { ReadableStream } from 'node:stream/web';
 import type { Headers, Request } from 'undici';
@@ -13,11 +13,11 @@ export class ZenContext extends Staack {
 
   static RequestKey = RequestKey;
 
-  static create(...keys: KeyProvider<any, boolean>[]): ZenContext {
+  static create(...keys: IKeyProvider<any, boolean>[]): ZenContext {
     return new ZenContext().with(...keys);
   }
 
-  protected instantiate(staackCore: StaackCoreValue): this {
+  protected instantiate(staackCore: TStaackCoreValue): this {
     return new ZenContext(staackCore) as any;
   }
 

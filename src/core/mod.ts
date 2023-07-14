@@ -1,4 +1,4 @@
-export { Key, type IKey, type KeyConsumer, type KeyProvider, type KeyProviderFn } from '@dldc/stack';
+export { Key, type IKey, type IKeyConsumer, type IKeyProvider, type TKeyProviderFn } from '@dldc/stack';
 export * from './HttpError';
 export * from './HttpHeaders';
 export * from './HttpMethod';

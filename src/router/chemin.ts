@@ -4,9 +4,9 @@ export {
   cheminParamsEqual,
   cheminsEqual,
   splitPathname,
-  type CheminMatchMaybe,
-  type CheminParamAny,
   type IChemin,
   type ICheminMatch,
   type ICheminParamBase,
+  type TCheminMatchMaybe,
+  type TCheminParamAny,
 } from '@dldc/chemin';
