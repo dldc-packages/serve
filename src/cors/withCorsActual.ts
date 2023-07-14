@@ -1,5 +1,6 @@
 import { Headers } from 'undici';
-import { HttpHeader, ZenResponse } from '../mod';
+import type { ZenResponse } from '../mod';
+import { HttpHeader } from '../mod';
 
 interface CorsConfigResolved {
   allowOrigin: string;

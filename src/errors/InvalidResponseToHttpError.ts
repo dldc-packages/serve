@@ -1,4 +1,5 @@
-import { InternalServerError, Middleware, ServerDidNotRespond, ZenResponse } from '../core/mod';
+import type { Middleware } from '../core/mod';
+import { InternalServerError, ServerDidNotRespond, ZenResponse } from '../core/mod';
 import { LoggerConsumer } from '../logger/mod';
 
 /**

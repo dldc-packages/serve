@@ -1,7 +1,8 @@
-import { Request, Response, errors } from 'undici';
+import type { Request, Response } from 'undici';
+import { errors } from 'undici';
 import { ZenContext } from './ZenContext';
 import { ZenResponse } from './ZenResponse';
-import { Middleware } from './compose';
+import type { Middleware } from './compose';
 
 export interface CreateHandlerOptions {
   base?: string;
@@ -13,7 +14,7 @@ export function createHandler(middleware: Middleware): Handler {
   return async (request: Request): Promise<Response> => {
     try {
       const zenContext = ZenContext.fromRequest(request);
-      const zenResponse = await middleware(zenContext, async () => {
+      const zenResponse = await middleware(zenContext, () => {
         throw new errors.UndiciError('Server did not respond');
       });
       return ZenResponse.toResponse(zenResponse);

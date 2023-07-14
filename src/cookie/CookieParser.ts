@@ -1,4 +1,5 @@
-import { HttpHeader, Key, Middleware, ZenResult } from '../core/mod';
+import type { Middleware, ZenResult } from '../core/mod';
+import { HttpHeader, Key } from '../core/mod';
 import { Cookies } from './Cookie';
 
 export const CookieParserKey = Key.createWithDefault<Cookies>('CookieParser', {});

@@ -1,5 +1,6 @@
 import { Erreur } from '@dldc/erreur';
-import { HttpError, Middleware, ZenResponse } from '../core/mod';
+import type { Middleware } from '../core/mod';
+import { HttpError, ZenResponse } from '../core/mod';
 
 /**
  * Handle HttpError and respond with a Text reponse

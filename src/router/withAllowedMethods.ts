@@ -1,5 +1,6 @@
 import { Headers } from 'undici';
-import { HttpHeader, HttpMethod, ZenResponse } from '../mod';
+import type { HttpMethod, ZenResponse } from '../mod';
+import { HttpHeader } from '../mod';
 import { RouterAllowedMethodsKey } from './AllowedMethodsRoutes';
 
 export function withAllowedMethods(response: ZenResponse, allowedMethods: Set<HttpMethod>): ZenResponse {

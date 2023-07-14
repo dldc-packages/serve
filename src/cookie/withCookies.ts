@@ -1,6 +1,8 @@
 import { Headers } from 'undici';
-import { HttpHeader, ZenResponse } from '../mod';
-import { SetCookie, SetCookies } from './Cookie';
+import type { ZenResponse } from '../mod';
+import { HttpHeader } from '../mod';
+import type { SetCookies } from './Cookie';
+import { SetCookie } from './Cookie';
 
 export function withCookies(res: ZenResponse, cookies: SetCookies): ZenResponse {
   if (cookies.length === 0) {

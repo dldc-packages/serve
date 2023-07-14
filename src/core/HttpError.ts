@@ -1,5 +1,7 @@
-import { Erreur, ErreurType, type IErreurType } from '@dldc/erreur';
-import { HttpStatus, HttpStatusCode, HttpStatusMessage, HttpStatusName } from './HttpStatus';
+import type { Erreur } from '@dldc/erreur';
+import { ErreurType, type IErreurType } from '@dldc/erreur';
+import type { HttpStatusCode, HttpStatusMessage, HttpStatusName } from './HttpStatus';
+import { HttpStatus } from './HttpStatus';
 
 export type { IErreurType };
 

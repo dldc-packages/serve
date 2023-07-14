@@ -1,7 +1,8 @@
-import { Key, KeyProvider, Staack, StaackCoreValue } from '@dldc/stack';
-import { ReadableStream } from 'node:stream/web';
-import { Headers, Request } from 'undici';
-import { HttpMethod } from './HttpMethod';
+import type { KeyProvider, StaackCoreValue } from '@dldc/stack';
+import { Key, Staack } from '@dldc/stack';
+import type { ReadableStream } from 'node:stream/web';
+import type { Headers, Request } from 'undici';
+import type { HttpMethod } from './HttpMethod';
 
 const RequestKey = Key.create<Request>('Request');
 

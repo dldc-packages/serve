@@ -6,7 +6,7 @@ import { mountServer } from './utils/mountServer';
 test('Send zenjson response', async () => {
   const date = new Date();
   const server = createNodeServer(
-    compose(HttpErrorToZenjsonResponse(), ErrorToHttpError(), async () => {
+    compose(HttpErrorToZenjsonResponse(), ErrorToHttpError(), () => {
       return zenjson({ date: date, infinity: Infinity, null: null });
     }),
   );

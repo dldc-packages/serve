@@ -1,4 +1,4 @@
-import { MimeType } from './MimeType';
+import type { MimeType } from './MimeType';
 import { PARAM_REGEXP, QESC_REGEXP, QUOTE_REGEXP, TEXT_REGEXP, TOKEN_REGEXP, TYPE_REGEXP } from './constants';
 
 export const ContentTypeCharset = {

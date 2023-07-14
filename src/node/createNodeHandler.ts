@@ -1,5 +1,5 @@
-import { RequestListener } from 'node:http';
-import { Middleware } from '../core/compose';
+import type { RequestListener } from 'node:http';
+import type { Middleware } from '../core/compose';
 import { createHandler } from '../core/createHandler';
 import { getRequestFromReqRes, setResponse } from './interrop';
 
@@ -12,9 +12,11 @@ export function createNodeHandler(
   { base = 'http://server.localhost' }: CreateNodeHandlerOptions = {},
 ): RequestListener {
   const handler = createHandler(middleware);
-  return async (req, res) => {
-    const request = await getRequestFromReqRes(base, req, res);
-    const response = await handler(request);
-    await setResponse(res, response);
+  return (req, res) => {
+    void (async () => {
+      const request = getRequestFromReqRes(base, req, res);
+      const response = await handler(request);
+      await setResponse(res, response);
+    })();
   };
 }

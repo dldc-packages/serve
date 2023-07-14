@@ -1,4 +1,5 @@
-import { HttpHeader, HttpHeadersName, HttpMethod } from '../core/mod';
+import type { HttpHeadersName } from '../core/mod';
+import { HttpHeader, HttpMethod } from '../core/mod';
 
 export const DEFAULT_ALLOW_METHODS: Array<HttpMethod> = [
   HttpMethod.POST,

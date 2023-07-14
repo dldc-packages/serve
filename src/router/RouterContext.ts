@@ -1,4 +1,4 @@
-import { IChemin } from '@dldc/chemin';
+import type { IChemin } from '@dldc/chemin';
 import { Key } from '../core/mod';
 
 export interface Params {

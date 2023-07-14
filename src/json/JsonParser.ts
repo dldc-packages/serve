@@ -1,5 +1,6 @@
 import { ContentType, MimeType } from '../content-type/mod';
-import { HttpHeader, HttpMethod, Key, Middleware, ZenResult } from '../core/mod';
+import type { Middleware, ZenResult } from '../core/mod';
+import { HttpHeader, HttpMethod, Key } from '../core/mod';
 
 export type GetJsonBody = () => Promise<any>;
 

@@ -1,5 +1,6 @@
 import { Erreur } from '@dldc/erreur';
-import { HttpError, Middleware } from '../core/mod';
+import type { Middleware } from '../core/mod';
+import { HttpError } from '../core/mod';
 import { LoggerConsumer } from '../logger/mod';
 import { zenjson } from './zenjson';
 

@@ -1,5 +1,6 @@
 import { Erreur } from '@dldc/erreur';
-import { HttpError, InternalServerError, Middleware } from '../core/mod';
+import type { Middleware } from '../core/mod';
+import { HttpError, InternalServerError } from '../core/mod';
 import { LoggerConsumer } from '../mod';
 
 export type ErrorToHttpErrorOptions = {

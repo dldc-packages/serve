@@ -1,6 +1,6 @@
 import { sanitize as defaultSanitize } from '@dldc/zenjson';
-import { ResponseInit } from 'undici';
-import { ZenContext, ZenResponse } from '../core/mod';
+import type { ResponseInit } from 'undici';
+import type { ZenContext, ZenResponse } from '../core/mod';
 import { json } from '../json/mod';
 import { ZenjsonConfig } from './ZenjsonParser';
 

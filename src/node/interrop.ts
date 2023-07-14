@@ -1,9 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { ReadableStream } from 'node:stream/web';
+import type { ReadableStream } from 'node:stream/web';
 import type { Writable } from 'stream';
-import { Request, RequestInit, Response } from 'undici';
+import type { RequestInit, Response } from 'undici';
+import { Request } from 'undici';
 
-export async function getRequestFromReqRes(base: string, req: IncomingMessage, res: ServerResponse): Promise<Request> {
+export function getRequestFromReqRes(base: string, req: IncomingMessage, res: ServerResponse): Request {
   const url = new URL(`${base}${req.url}`);
   const headers = req.headers as Record<string, string>;
   const controller = new AbortController();

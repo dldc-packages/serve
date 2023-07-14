@@ -1,4 +1,5 @@
-import { Headers, ResponseInit } from 'undici';
+import type { ResponseInit } from 'undici';
+import { Headers } from 'undici';
 import { Key, ZenResponse } from '../core/mod';
 
 const JsonKey = Key.create<unknown>('Json');

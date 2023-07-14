@@ -1,6 +1,8 @@
 import { HttpMethod, compose } from '../core/mod';
-import { CorsPreflight, CorsPreflightConfig } from '../cors/mod';
-import { Route, Routes } from './Route';
+import type { CorsPreflightConfig } from '../cors/mod';
+import { CorsPreflight } from '../cors/mod';
+import type { Routes } from './Route';
+import { Route } from './Route';
 
 export function CorsPreflightRoutes(routes: Routes, config: CorsPreflightConfig = {}): Routes {
   const PreflightMiddleware = CorsPreflight(config);

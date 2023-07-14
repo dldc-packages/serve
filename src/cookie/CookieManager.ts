@@ -1,5 +1,7 @@
-import { Key, Middleware, ZenResult } from '../core/mod';
-import { CreateCookieOptions, SetCookie, SetCookies } from './Cookie';
+import type { Middleware, ZenResult } from '../core/mod';
+import { Key } from '../core/mod';
+import type { CreateCookieOptions, SetCookies } from './Cookie';
+import { SetCookie } from './Cookie';
 import { withCookies } from './withCookies';
 
 export interface CookieManager {

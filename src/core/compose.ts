@@ -1,6 +1,6 @@
 import * as miid from '@dldc/compose';
-import { ZenContext } from './ZenContext';
-import { ZenResponse } from './ZenResponse';
+import type { ZenContext } from './ZenContext';
+import type { ZenResponse } from './ZenResponse';
 
 export type MaybePromise<T> = T | Promise<T>;
 export type ZenResult = ZenResponse;

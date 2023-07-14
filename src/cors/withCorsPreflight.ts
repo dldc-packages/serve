@@ -1,7 +1,7 @@
 import { Headers } from 'undici';
 import { HttpHeader } from '../core/mod';
 import { ZenResponse } from '../mod';
-import { CorsPreflightConfigResolved } from './utils';
+import type { CorsPreflightConfigResolved } from './utils';
 
 export function withCorsPreflight(config: CorsPreflightConfigResolved): ZenResponse {
   const headers = new Headers();

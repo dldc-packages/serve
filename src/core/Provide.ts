@@ -1,6 +1,6 @@
 import { Key } from '@dldc/stack';
-import { ZenContext } from './ZenContext';
-import { Middleware } from './compose';
+import type { ZenContext } from './ZenContext';
+import type { Middleware } from './compose';
 
 export function Provide<Result>(name: string, validate: (ctx: ZenContext) => Promise<Result>) {
   const CtxKey = Key.create<Result>(name);

@@ -1,5 +1,5 @@
 import { TooManyRequests } from '../core/mod';
-import { LimitStrategy } from './LimitStrategy';
+import type { LimitStrategy } from './LimitStrategy';
 
 export interface GlobalRateLimit<S> {
   hit: () => S;

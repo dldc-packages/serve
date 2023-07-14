@@ -1,5 +1,6 @@
 import { Key } from '@dldc/stack';
-import { HttpHeader, Middleware } from '../core/mod';
+import type { Middleware } from '../core/mod';
+import { HttpHeader } from '../core/mod';
 import { ContentEncoding } from './ContentEnconding';
 import { compress } from './compress';
 

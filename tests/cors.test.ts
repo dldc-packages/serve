@@ -1,9 +1,8 @@
 import { describe, expect, test } from 'vitest';
+import type { CorsActualConfig, CorsPreflightConfig } from '../src/mod';
 import {
   CorsActual,
-  CorsActualConfig,
   CorsPreflight,
-  CorsPreflightConfig,
   ErrorToHttpError,
   HttpError,
   HttpErrorToTextResponse,
@@ -24,7 +23,7 @@ describe('CORS: simple / actual requests', () => {
     );
   }
 
-  test('create server with cors does not throw', async () => {
+  test('create server with cors does not throw', () => {
     expect(() => createCorsServer()).not.toThrow();
   });
 

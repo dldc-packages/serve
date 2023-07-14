@@ -1,5 +1,7 @@
-import { HttpHeader, Middleware } from '../core/mod';
-import { CorsPreflightConfig, createPreflightConfigResolver } from './utils';
+import type { Middleware } from '../core/mod';
+import { HttpHeader } from '../core/mod';
+import type { CorsPreflightConfig } from './utils';
+import { createPreflightConfigResolver } from './utils';
 import { withCorsPreflight } from './withCorsPreflight';
 
 export function CorsPreflight(config: CorsPreflightConfig = {}): Middleware {

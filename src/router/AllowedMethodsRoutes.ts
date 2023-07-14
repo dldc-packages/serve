@@ -1,5 +1,7 @@
-import { compose, HttpMethod, Key, Middleware, ZenResult } from '../core/mod';
-import { Route, Routes } from './Route';
+import type { Middleware, ZenResult } from '../core/mod';
+import { compose, HttpMethod, Key } from '../core/mod';
+import type { Routes } from './Route';
+import { Route } from './Route';
 import { withAllowedMethods } from './withAllowedMethods';
 
 export const RouterAllowedMethodsKey = Key.create<Set<HttpMethod>>('RouterAllowedMethods');

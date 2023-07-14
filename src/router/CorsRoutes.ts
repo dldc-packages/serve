@@ -1,7 +1,9 @@
 import { HttpMethod, compose } from '../core/mod';
-import { CorsActual, CorsPreflightConfig } from '../cors/mod';
+import type { CorsPreflightConfig } from '../cors/mod';
+import { CorsActual } from '../cors/mod';
 import { CorsPreflightRoutes } from './CorsPreflightRoutes';
-import { Route, Routes } from './Route';
+import type { Routes } from './Route';
+import { Route } from './Route';
 
 export function CorsRoutes(config: CorsPreflightConfig = {}) {
   return (routes: Routes): Routes => {

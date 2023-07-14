@@ -137,6 +137,6 @@ export type HttpRequestHeadersName = (typeof HttpRequestHeader)[keyof typeof Htt
 export type HttpResponseHeadersName = (typeof HttpResponseHeader)[keyof typeof HttpResponseHeader];
 export type HttpHeadersName = (typeof HttpHeader)[keyof typeof HttpHeader];
 
-export type HttpRequestHeaders = Array<[key: HttpRequestHeadersName | string, value: string | number]>;
-export type HttpResponseHeaders = Array<[key: HttpResponseHeadersName | string, value: string | number]>;
-export type HttpHeaders = Array<[key: HttpHeadersName | string, value: string | number]>;
+export type HttpRequestHeaders = Array<[key: string, value: string | number]>;
+export type HttpResponseHeaders = Array<[key: string, value: string | number]>;
+export type HttpHeaders = Array<[key: string, value: string | number]>;

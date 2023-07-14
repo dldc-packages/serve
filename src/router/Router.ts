@@ -1,8 +1,10 @@
-import { IChemin } from '@dldc/chemin';
+import type { IChemin } from '@dldc/chemin';
 import { URL } from 'node:url';
-import { Middleware, ZenResult } from '../core/mod';
-import { FindResult, Route, Routes } from './Route';
-import { RouterContext, RouterKey } from './RouterContext';
+import type { Middleware, ZenResult } from '../core/mod';
+import type { FindResult, Routes } from './Route';
+import { Route } from './Route';
+import type { RouterContext } from './RouterContext';
+import { RouterKey } from './RouterContext';
 import { SkipRouteKey } from './skipRoute';
 
 export function Router(routes: Routes): Middleware {
