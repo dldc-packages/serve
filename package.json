@@ -40,12 +40,12 @@
     "typecheck:watch": "tsc --watch"
   },
   "dependencies": {
-    "@dldc/chemin": "^8.0.6",
-    "@dldc/compose": "^7.0.5",
-    "@dldc/erreur": "^3.0.6",
-    "@dldc/pubsub": "^5.2.0",
-    "@dldc/stack": "^3.0.4",
-    "@dldc/zenjson": "^1.0.7",
+    "@dldc/chemin": "^9.0.0",
+    "@dldc/compose": "^7.0.7",
+    "@dldc/erreur": "^3.0.8",
+    "@dldc/pubsub": "^5.2.2",
+    "@dldc/stack": "^3.1.4",
+    "@dldc/zenjson": "^1.0.8",
     "undici": "^5.22.1"
   },
   "devDependencies": {

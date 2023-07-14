@@ -6,23 +6,23 @@ settings:
 
 dependencies:
   '@dldc/chemin':
-    specifier: ^8.0.6
-    version: 8.0.6
+    specifier: ^9.0.0
+    version: 9.0.0
   '@dldc/compose':
-    specifier: ^7.0.5
-    version: 7.0.5
+    specifier: ^7.0.7
+    version: 7.0.7
   '@dldc/erreur':
-    specifier: ^3.0.6
-    version: 3.0.6
+    specifier: ^3.0.8
+    version: 3.0.8
   '@dldc/pubsub':
-    specifier: ^5.2.0
-    version: 5.2.0
+    specifier: ^5.2.2
+    version: 5.2.2
   '@dldc/stack':
-    specifier: ^3.0.4
-    version: 3.0.4
+    specifier: ^3.1.4
+    version: 3.1.4
   '@dldc/zenjson':
-    specifier: ^1.0.7
-    version: 1.0.7
+    specifier: ^1.0.8
+    version: 1.0.8
   undici:
     specifier: ^5.22.1
     version: 5.22.1
@@ -108,32 +108,34 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@dldc/chemin@8.0.6:
-    resolution: {integrity: sha512-Dsr0VH6+xjFgt+wcrqbiCu82bAZ3jSxTJha0qCpnDM2o4NKqlB3JxuBWyId/6lYy8k/sQ1QWve4PBcwj4dLDow==}
+  /@dldc/chemin@9.0.0:
+    resolution: {integrity: sha512-esgAQW0/WcIONn6fSEL5Jw8SbkuWvWdVQ3jtLOmFOaaqFTfH8biEF5IJ5Nza07F0x0RxbvooT8r4nu05/Luvdw==}
     dev: false
 
-  /@dldc/compose@7.0.5:
-    resolution: {integrity: sha512-z6y2W+o08Wmkrr9K4TRUQEhgvxp/6eCu2lFVUbIaXQOc/T5QyYLiqocLx0T2sd17tqRbKeRio7CeOMRU4iCirw==}
-    dev: false
-
-  /@dldc/erreur@3.0.6:
-    resolution: {integrity: sha512-Kp8K6roiCkqBRvW46UiQcX8yTRiNAqrKpZUILTB7WPdyKUkqkrVZB47aAA17iy/vZCQ5cF9NeiVBOvSFTBOyKQ==}
+  /@dldc/compose@7.0.7:
+    resolution: {integrity: sha512-L0U1bxVC82SHjM+RQXIvBfJrLs0WcoY/rXw6e9oKKKpHbGqemIazUgUan50WGXTbI64ygf43sqpO0flBnx5PAg==}
     dependencies:
-      '@dldc/stack': 3.0.4
+      '@dldc/erreur': 3.0.8
     dev: false
 
-  /@dldc/pubsub@5.2.0:
-    resolution: {integrity: sha512-jQcoeLoOLIuArQbPfFvoD/5RnYq2u4sMZ49k15Avlyzq8SxRf5txOJT9QjU0BPL7nTRkCR7Cwa+mtXffPnJbUA==}
+  /@dldc/erreur@3.0.8:
+    resolution: {integrity: sha512-H51xM7LPWAU9faq33cyhukvMtHfZMqEjoiyzUTyUIFGwF52xY/qxwjQVMm38Osj4GrAE3sDcS4aXg7TfZu4RMA==}
     dependencies:
-      '@dldc/erreur': 3.0.6
+      '@dldc/stack': 3.1.4
     dev: false
 
-  /@dldc/stack@3.0.4:
-    resolution: {integrity: sha512-v3CRaq0yGqT6l0kvuCCAulimOQetn6UAXtJ211+ZhZPIUK+224QEKnVvIo2Hg5DXfotv4SjJG7AI7KlUq67zEg==}
+  /@dldc/pubsub@5.2.2:
+    resolution: {integrity: sha512-gLHuFwN6QGIU71EBvb99YikOZt0PX2R6vB/vIi41pAw4qryYZg2DRuZoRsHzY0dVA4cyHW0OL/0780YV7hRoNw==}
+    dependencies:
+      '@dldc/erreur': 3.0.8
     dev: false
 
-  /@dldc/zenjson@1.0.7:
-    resolution: {integrity: sha512-dp45M4TixpNtZ+UFeZWLC5JMKkGVPHtz9zmjP9UebWN1nGB0o9KxixlxQreOMzHk4CsuyKcWkdaMUd/Hhtw3Zw==}
+  /@dldc/stack@3.1.4:
+    resolution: {integrity: sha512-wyJ3K5vHdXNXmmpywQShbkLCUtCTzkNveizPf2vXS/AMlji/VenkOf4g5vgfy34I34MTuyuZ6CXJNAvYzUYaig==}
+    dev: false
+
+  /@dldc/zenjson@1.0.8:
+    resolution: {integrity: sha512-EqQzJs2LDFXhvNiNjEjn2v47GNlDzdbyDIkEy8f76hkNcJpyo8QasI9YyGJbaalqHGIC0iClTl2Vsy2cMDSyYw==}
     dev: false
 
   /@esbuild/android-arm64@0.18.11:
