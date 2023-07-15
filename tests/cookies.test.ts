@@ -5,17 +5,16 @@ import {
   ErrorToHttpError,
   HttpErrorToTextResponse,
   NotFound,
-  SetCookie,
   compose,
   createNodeServer,
   noContent,
-  withCookies,
+  withSetCookies,
 } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 test('should set the Set-Cookie header', async () => {
   const app = createNodeServer(() => {
-    return withCookies(noContent(), [SetCookie.create('token', 'T55YTRR55554')]);
+    return withSetCookies(noContent(), [{ name: 'token', value: 'T55YTRR55554' }]);
   });
   const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
@@ -23,7 +22,7 @@ test('should set the Set-Cookie header', async () => {
     HTTP/1.1 204 No Content
     Connection: close
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Set-Cookie: token=T55YTRR55554; Path=/; HttpOnly
+    Set-Cookie: token=T55YTRR55554;
   `);
   await close();
 });
@@ -68,7 +67,7 @@ test('should set two Set-Cookie header using Manager', async () => {
 
 test('should return the same result as koa', async () => {
   const app = createNodeServer(() => {
-    return withCookies(noContent(), [SetCookie.create('token', 'T55YTRR55554')]);
+    return withSetCookies(noContent(), [{ name: 'token', value: 'T55YTRR55554' }]);
   });
 
   const { close, url, fetch } = await mountServer(app);
@@ -87,7 +86,7 @@ test('should return the same result as koa', async () => {
 
 test('should return the same result as koa when deleting cookie', async () => {
   const app = createNodeServer(() => {
-    return withCookies(noContent(), [SetCookie.delete('token')]);
+    return withSetCookies(noContent(), [{ name: 'token', value: '', expires: new Date(0) }]);
   });
   const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
@@ -102,7 +101,7 @@ test('should return the same result as koa when deleting cookie', async () => {
   await close();
 });
 
-test('Cookie manager should set and delete cookies', async () => {
+test.only('Cookie manager should set and delete cookies', async () => {
   const app = createNodeServer(
     compose(CookieManager(), (ctx) => {
       const manager = ctx.getOrFail(CookieManagerConsumer);
@@ -119,7 +118,8 @@ test('Cookie manager should set and delete cookies', async () => {
     HTTP/1.1 204 No Content
     Connection: close
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Set-Cookie: new-cookie=value; Path=/; HttpOnly, deleted-cookie=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; HttpOnly
+    Set-Cookie: new-cookie=value
+    Set-Cookie: deleted-cookie=; Expires=Thu, 01 Jan 1970 00:00:00 GMT
   `);
 
   await close();

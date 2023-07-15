@@ -1,14 +1,12 @@
+import type { Cookie } from 'undici';
+import { Headers, deleteCookie, getSetCookies, setCookie } from 'undici';
 import type { Middleware, ZenResult } from '../core/mod';
 import { Key } from '../core/mod';
-import type { CreateCookieOptions, SetCookies } from './Cookie';
-import { SetCookie } from './Cookie';
-import { withCookies } from './withCookies';
+import { withSetCookies } from './withSetCookies';
 
 export interface CookieManager {
-  set(name: string, value: string, options?: CreateCookieOptions): void;
-  has(name: string): boolean;
-  unset(name: string): void;
-  delete(name: string, options?: CreateCookieOptions): void;
+  set(name: string, value: string, options?: Omit<Cookie, 'name' | 'value'>): void;
+  delete(name: string, attributes?: { name?: string; domain?: string }): void;
 }
 
 export const CookieManagerKey = Key.create<CookieManager>('CookieManager');
@@ -16,23 +14,21 @@ export const CookieManagerConsumer = CookieManagerKey.Consumer;
 
 export function CookieManager(): Middleware {
   return async (ctx, next): Promise<ZenResult> => {
-    let cookies: SetCookies = [];
+    const cookiesHeader = new Headers();
     const manager: CookieManager = {
       set: (name, value, options) => {
-        cookies.push(SetCookie.create(name, value, options));
+        setCookie(cookiesHeader, {
+          ...options,
+          name,
+          value,
+        });
       },
-      has: (name) => {
-        const found = cookies.find((c) => c.name === name);
-        return found !== undefined;
-      },
-      delete: (name, options) => {
-        cookies.push(SetCookie.delete(name, options));
-      },
-      unset: (name) => {
-        cookies = cookies.filter((c) => c.name !== name);
+      delete: (name, attributes) => {
+        deleteCookie(cookiesHeader, name, attributes);
       },
     };
     const response = await next(ctx.with(CookieManagerKey.Provider(manager)));
-    return withCookies(response, cookies);
+    const setCookies = getSetCookies(cookiesHeader);
+    return withSetCookies(response, setCookies);
   };
 }

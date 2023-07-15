@@ -1,4 +1,4 @@
-export * from './Cookie';
-export * from './CookieManager';
-export * from './CookieParser';
-export * from './withCookies';
+export { type Cookie } from 'undici';
+export { CookieManager, CookieManagerConsumer, CookieManagerKey } from './CookieManager';
+export { CookieParser, CookieParserConsumer, CookieParserKey, type Cookies } from './CookieParser';
+export { withSetCookies } from './withSetCookies';

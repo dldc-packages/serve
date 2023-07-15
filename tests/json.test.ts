@@ -162,7 +162,7 @@ test('JsonPackage works with Cookies', async () => {
     Connection: close
     Content-Type: application/json; charset=utf-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Set-Cookie: token=AZERTYUIO; Path=/; HttpOnly
+    Set-Cookie: token=AZERTYUIO
     Transfer-Encoding: chunked
   `);
   expect(await res.json()).toEqual({ foo: 'bar' });

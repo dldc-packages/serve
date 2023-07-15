@@ -26,9 +26,7 @@ export function getRequestFromReqRes(base: string, req: IncomingMessage, res: Se
 
 export async function setResponse(res: ServerResponse, response: Response): Promise<void> {
   res.statusMessage = response.statusText;
-  const headers = Object.fromEntries(response.headers);
-  res.writeHead(response.status, headers);
-
+  res.writeHead(response.status, Array.from(response.headers.entries()));
   if (response.body) {
     await writeReadableStreamToWritable(response.body, res);
   } else {

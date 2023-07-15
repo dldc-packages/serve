@@ -1,6 +1,8 @@
+import { getCookies } from 'undici';
 import type { Middleware, ZenResult } from '../core/mod';
-import { HttpHeader, Key } from '../core/mod';
-import { Cookies } from './Cookie';
+import { Key } from '../core/mod';
+
+export type Cookies = Record<string, string>;
 
 export const CookieParserKey = Key.createWithDefault<Cookies>('CookieParser', {});
 export const CookieParserConsumer = CookieParserKey.Consumer;
@@ -9,9 +11,7 @@ export function CookieParser(): Middleware {
   return async (ctx, next): Promise<ZenResult> => {
     const request = ctx.request;
     const headers = request.headers;
-
-    const cookiesStr = headers.get(HttpHeader.Cookie);
-    const cookies = cookiesStr === null ? {} : Cookies.parse(cookiesStr);
+    const cookies = getCookies(headers);
     return next(ctx.with(CookieParserKey.Provider(cookies)));
   };
 }
