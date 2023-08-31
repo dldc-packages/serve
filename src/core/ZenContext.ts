@@ -11,7 +11,7 @@ export class ZenContext extends Staack {
     return new ZenContext().with(RequestKey.Provider(request));
   }
 
-  static RequestKey = RequestKey;
+  static readonly RequestKey = RequestKey;
 
   static create(...keys: IKeyProvider<any, boolean>[]): ZenContext {
     return new ZenContext().with(...keys);
