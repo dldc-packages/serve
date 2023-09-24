@@ -7,9 +7,9 @@ import {
   CorsActual,
   CorsPreflight,
   ErrorToHttpError,
+  HttpError,
   HttpErrorToTextResponse,
   InvalidResponseToHttpError,
-  NotFound,
   Route,
   Router,
   ZenResponse,
@@ -42,7 +42,7 @@ test('real life', async () => {
             return ZenResponse.create('TODO');
           }),
           Route.fallback(() => {
-            throw NotFound.create();
+            throw HttpError.NotFound.create();
           }),
         ]),
       ),

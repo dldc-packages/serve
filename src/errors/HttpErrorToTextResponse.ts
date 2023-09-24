@@ -10,8 +10,8 @@ export function HttpErrorToTextResponse(): Middleware {
     try {
       return await next(ctx);
     } catch (error) {
-      const err = Erreur.fromUnknown(error);
-      const httpError = err.get(HttpError.Consumer);
+      const err = Erreur.createFromUnknown(error);
+      const httpError = err.get(HttpError.Key.Consumer);
       if (httpError) {
         return ZenResponse.create(`Error ${httpError.code} ${httpError.message}`, { status: httpError.code });
       }

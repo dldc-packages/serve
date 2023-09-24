@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
 import {
   ErrorToHttpError,
+  HttpError,
   HttpErrorToTextResponse,
   HttpMethod,
-  NotFound,
   ZenResponse,
   compose,
   createNodeServer,
@@ -104,7 +104,7 @@ test('head request return 204 & empty body', async () => {
 test('throw HttpError return an error', async () => {
   const server = createNodeServer(
     compose(HttpErrorToTextResponse(), () => {
-      throw NotFound.create();
+      throw HttpError.NotFound.create();
     }),
   );
   const { close, url, fetch } = await mountServer(server);

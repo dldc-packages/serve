@@ -7,10 +7,10 @@ import {
   CorsActual,
   CorsPreflight,
   ErrorToHttpError,
+  HttpError,
   HttpErrorToJsonResponse,
   InvalidResponseToHttpError,
   JsonParser,
-  NotFound,
   Route,
   Router,
   compose,
@@ -37,7 +37,7 @@ test('real life 2', async () => {
             return json({ success: true });
           }),
           Route.fallback(() => {
-            throw NotFound.create();
+            throw HttpError.NotFound.create();
           }),
         ]),
       ),

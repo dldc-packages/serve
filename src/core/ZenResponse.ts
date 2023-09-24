@@ -1,5 +1,5 @@
-import type { TStaackCoreValue } from '@dldc/stack';
-import { Key, Staack } from '@dldc/stack';
+import type { TStackCoreValue } from '@dldc/stack';
+import { Key, Stack } from '@dldc/stack';
 import type { BodyInit, ResponseInit } from 'undici';
 import { Headers, Response } from 'undici';
 
@@ -9,7 +9,7 @@ const StatusKey = Key.create<number>('Status');
 const StatusTextKey = Key.create<string>('StatusText');
 const RedirectKey = Key.create<{ url: string; status: number }>('Redirect');
 
-export class ZenResponse extends Staack {
+export class ZenResponse extends Stack {
   static create(body?: BodyInit | null, init?: ResponseInit): ZenResponse {
     const providers = [
       HeadersKey.Provider(new Headers(init?.headers)),
@@ -34,8 +34,8 @@ export class ZenResponse extends Staack {
   static StatusTextKey = StatusTextKey;
   static RedirectKey = RedirectKey;
 
-  protected instantiate(staackCore: TStaackCoreValue): this {
-    return new ZenResponse(staackCore) as any;
+  protected instantiate(stackCore: TStackCoreValue): this {
+    return new ZenResponse(stackCore) as any;
   }
 
   get body(): BodyInit | null {

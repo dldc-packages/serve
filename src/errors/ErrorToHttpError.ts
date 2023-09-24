@@ -1,6 +1,6 @@
 import { Erreur } from '@dldc/erreur';
 import type { Middleware } from '../core/mod';
-import { HttpError, InternalServerError } from '../core/mod';
+import { HttpError } from '../core/mod';
 import { LoggerConsumer } from '../mod';
 
 export type ErrorToHttpErrorOptions = {
@@ -15,15 +15,15 @@ export function ErrorToHttpError({ logOnError = true }: ErrorToHttpErrorOptions 
     try {
       return await next(ctx);
     } catch (error) {
-      const err = Erreur.fromUnknown(error);
-      if (err.has(HttpError.Consumer)) {
+      const err = Erreur.createFromUnknown(error);
+      if (err.has(HttpError.Key.Consumer)) {
         throw err;
       }
       if (logOnError) {
         const logger = ctx.get(LoggerConsumer);
         logger.error(error);
       }
-      throw InternalServerError.create(err.message, err);
+      throw HttpError.InternalServerError.create(err.message, err);
     }
   };
 }

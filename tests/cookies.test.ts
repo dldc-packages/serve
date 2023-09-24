@@ -3,8 +3,8 @@ import {
   CookieManager,
   CookieManagerConsumer,
   ErrorToHttpError,
+  HttpError,
   HttpErrorToTextResponse,
-  NotFound,
   compose,
   createNodeServer,
   noContent,
@@ -131,7 +131,7 @@ test('Cookies should not be set on error response', async () => {
       const manager = ctx.getOrFail(CookieManagerConsumer);
       manager.set('new-cookie', 'value');
       manager.delete('deleted-cookie');
-      throw NotFound.create();
+      throw HttpError.NotFound.create();
     }),
   );
   const { url, close, fetch } = await mountServer(app);

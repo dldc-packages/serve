@@ -10,8 +10,8 @@ export function HttpErrorToJsonResponse(): Middleware {
     try {
       return await next(ctx);
     } catch (error) {
-      const err = Erreur.fromUnknown(error);
-      const httpError = err.get(HttpError.Consumer);
+      const err = Erreur.createFromUnknown(error);
+      const httpError = err.get(HttpError.Key.Consumer);
       if (httpError) {
         logger.error(error);
         return json(httpError, { status: httpError.code });

@@ -5,13 +5,13 @@ import {
   CookieManagerConsumer,
   ErrorToHttpError,
   GetJsonBodyKeyConsumer,
+  HttpError,
   HttpErrorToJsonResponse,
   HttpErrorToTextResponse,
   HttpHeader,
   HttpMethod,
   InvalidResponseToHttpError,
   JsonParser,
-  NotFound,
   compose,
   createNodeServer,
   json,
@@ -108,7 +108,7 @@ test('JsonPackage convert text to Json', async () => {
 test('JsonPackage handle HttpError and convert them to json', async () => {
   const server = createNodeServer(
     compose(JsonPackage(), () => {
-      throw NotFound.create();
+      throw HttpError.NotFound.create();
     }),
   );
   const { close, url, fetch } = await mountServer(server);

@@ -1,9 +1,6 @@
-import type { Erreur } from '@dldc/erreur';
-import { ErreurType, type IErreurType } from '@dldc/erreur';
+import { Erreur, Key } from '@dldc/erreur';
 import type { HttpStatusCode, HttpStatusMessage, HttpStatusName } from './HttpStatus';
 import { HttpStatus } from './HttpStatus';
-
-export type { IErreurType };
 
 export interface IHttpError {
   name: HttpStatusName;
@@ -11,83 +8,111 @@ export interface IHttpError {
   message: HttpStatusMessage;
 }
 
-export const HttpError = ErreurType.defineWithTransform(
-  'HttpError',
-  (codeOrName: HttpStatusCode | HttpStatusName = 500, message?: HttpStatusMessage): IHttpError => {
-    const code: HttpStatusCode = typeof codeOrName === 'number' ? codeOrName : HttpStatus.fromName(codeOrName).code;
-    const status = HttpStatus.fromCode(code);
-    return { code, name: status.name, message: message ?? status.message };
-  },
-  (err, provider, data) => {
-    return err.with(provider).withMessage(`[HttpError] ${data.code} ${data.name}`);
-  },
-);
-
 export interface IUnauthorized {
   reason?: string;
 }
-
-export const Unauthorized = ErreurType.defineWithTransform(
-  'Unauthorized',
-  (reason?: string): IUnauthorized => ({ reason }),
-  (err, provider, data) => {
-    return HttpError.append(err, 'Unauthorized', `(reason: ${data.reason})`).with(provider);
-  },
-);
-
-export const NotFound = ErreurType.defineEmpty('NotFound', (err, provider) =>
-  HttpError.append(err, 'NotFound').with(provider),
-);
-
-export const NotAcceptable = ErreurType.defineEmpty('NotAcceptable', (err, provider) =>
-  HttpError.append(err, 'NotAcceptable').with(provider),
-);
 
 export interface IBadRequest {
   message?: string;
 }
 
-export const BadRequest = ErreurType.defineWithTransform(
-  'BadRequest',
-  (message?: string): IBadRequest => ({ message }),
-  (err, provider, data) => HttpError.append(err, 'BadRequest', data.message).with(provider),
-);
-
 export interface IForbidden {
   reason?: string;
 }
-
-export const Forbidden = ErreurType.defineWithTransform(
-  'Forbidden',
-  (reason?: string): IForbidden => ({ reason }),
-  (err, provider, data) => {
-    const base = HttpError.append(err, 'Forbidden');
-    const { code, name } = base.getOrFail(HttpError.Consumer);
-    return base.with(provider).withMessage(`[HttpError] ${code} ${name} (${data.reason})`);
-  },
-);
 
 export interface IInternalServerError {
   message?: string;
   cause?: Erreur;
 }
 
-export const InternalServerError = ErreurType.defineWithTransform(
-  'InternalServerError',
-  (message?: string, cause?: Erreur): IInternalServerError => ({ message, cause }),
-  (err, provider, data) => HttpError.append(err, 'InternalServerError', data.message).with(provider),
-);
-
-export const ServerDidNotRespond = ErreurType.defineEmpty('ServerDidNotRespond', (err, provider) => {
-  return InternalServerError.append(err, `Server did not respond`).with(provider);
-});
-
-interface ITooManyRequests {
+export interface ITooManyRequests {
   reason?: string;
 }
 
-export const TooManyRequests = ErreurType.defineWithTransform(
-  'TooManyRequests',
-  (reason?: string): ITooManyRequests => ({ reason }),
-  (err, provider, data) => HttpError.append(err, 'TooManyRequests', data.reason).with(provider),
-);
+export const HttpError = (() => {
+  const HttpErrorKey = Key.create<IHttpError>('HttpError');
+  function createHttpError(codeOrName: HttpStatusCode | HttpStatusName = 500, message?: HttpStatusMessage) {
+    const code: HttpStatusCode = typeof codeOrName === 'number' ? codeOrName : HttpStatus.fromName(codeOrName).code;
+    const status = HttpStatus.fromCode(code);
+    return Erreur.createWith(HttpErrorKey, { code, name: status.name, message: message ?? status.message })
+      .withName('HttpError')
+      .withMessage(`${code} ${status.name}`);
+  }
+
+  const UnauthorizedKey = Key.create<IUnauthorized>('Unauthorized');
+  function createUnauthorized(reason?: string) {
+    return createHttpError('Unauthorized', `(reason: ${reason})`).with(UnauthorizedKey.Provider({ reason }));
+  }
+
+  const NotFoundKey = Key.createEmpty('NotFound');
+  function createNotFound() {
+    return createHttpError('NotFound').with(NotFoundKey.Provider());
+  }
+
+  const NotAcceptableKey = Key.createEmpty('NotAcceptable');
+  function createNotAcceptable() {
+    return createHttpError('NotAcceptable').with(NotAcceptableKey.Provider());
+  }
+
+  const BadRequestKey = Key.create<IBadRequest>('BadRequest');
+  function createBadRequest(message?: string) {
+    return createHttpError('BadRequest', message).with(BadRequestKey.Provider({ message }));
+  }
+
+  const ForbiddenKey = Key.create<IForbidden>('Forbidden');
+  function createForbidden(reason?: string) {
+    return createHttpError('Forbidden', `(reason: ${reason})`).with(ForbiddenKey.Provider({ reason }));
+  }
+
+  const InternalServerErrorKey = Key.create<IInternalServerError>('InternalServerError');
+  function createInternalServerError(message?: string, cause?: Erreur) {
+    return createHttpError('InternalServerError', message).with(InternalServerErrorKey.Provider({ message, cause }));
+  }
+
+  const ServerDidNotRespondKey = Key.createEmpty('ServerDidNotRespond');
+  function createServerDidNotRespond() {
+    return createInternalServerError('Server did not respond').with(ServerDidNotRespondKey.Provider());
+  }
+
+  const TooManyRequestsKey = Key.create<ITooManyRequests>('TooManyRequests');
+  function createTooManyRequests(reason?: string) {
+    return createHttpError('TooManyRequests', `(reason: ${reason})`).with(TooManyRequestsKey.Provider({ reason }));
+  }
+
+  return {
+    Key: HttpErrorKey,
+    create: createHttpError,
+    Unauthorized: {
+      Key: UnauthorizedKey,
+      create: createUnauthorized,
+    },
+    NotFound: {
+      Key: NotFoundKey,
+      create: createNotFound,
+    },
+    NotAcceptable: {
+      Key: NotAcceptableKey,
+      create: createNotAcceptable,
+    },
+    BadRequest: {
+      Key: BadRequestKey,
+      create: createBadRequest,
+    },
+    Forbidden: {
+      Key: ForbiddenKey,
+      create: createForbidden,
+    },
+    InternalServerError: {
+      Key: InternalServerErrorKey,
+      create: createInternalServerError,
+    },
+    ServerDidNotRespond: {
+      Key: ServerDidNotRespondKey,
+      create: createServerDidNotRespond,
+    },
+    TooManyRequests: {
+      Key: TooManyRequestsKey,
+      create: createTooManyRequests,
+    },
+  };
+})();

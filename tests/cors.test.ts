@@ -7,7 +7,6 @@ import {
   HttpError,
   HttpErrorToTextResponse,
   HttpMethod,
-  NotFound,
   ZenResponse,
   compose,
   createNodeServer,
@@ -411,7 +410,7 @@ describe('CorsPackage', () => {
   test('handle error', async () => {
     const app = createNodeServer(
       compose(CorsActual(), CorsPreflight(), HttpErrorToTextResponse(), ErrorToHttpError(), () => {
-        throw NotFound.create();
+        throw HttpError.NotFound.create();
       }),
     );
     const { url, close, fetch } = await mountServer(app);
@@ -434,7 +433,7 @@ describe('CorsPackage', () => {
   test('handle error on preflight', async () => {
     const app = createNodeServer(
       compose(CorsActual(), CorsPreflight(), () => {
-        throw NotFound.create();
+        throw HttpError.NotFound.create();
       }),
     );
     const { url, close, fetch } = await mountServer(app);
