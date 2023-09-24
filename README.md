@@ -1,1 +1,3 @@
-# ZenServe
+# Serve
+
+> Type-safe NodeJS HTTP framework
