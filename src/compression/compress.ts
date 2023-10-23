@@ -1,4 +1,4 @@
-import { Readable } from 'node:stream';
+import { Transform } from 'node:stream';
 import zlib from 'node:zlib';
 import type { ReadableStream } from 'stream/web';
 import { Headers, Response } from 'undici';
@@ -42,18 +42,18 @@ function encodeBodyWithEncoding(
   }
   if (encoding === ContentEncoding.Brotli) {
     const enc = zlib.createBrotliCompress();
-    setFlush(enc.flush.bind(enc));
-    return Readable.toWeb(Readable.fromWeb(body).pipe(enc));
+    setFlush(() => enc.flush());
+    return body.pipeThrough(Transform.toWeb(enc));
   }
   if (encoding === ContentEncoding.Gzip) {
     const enc = zlib.createGzip();
-    setFlush(enc.flush.bind(enc));
-    return Readable.toWeb(Readable.fromWeb(body).pipe(enc));
+    setFlush(() => enc.flush());
+    return body.pipeThrough(Transform.toWeb(enc));
   }
   if (encoding === ContentEncoding.Deflate) {
     const enc = zlib.createDeflate();
-    setFlush(enc.flush.bind(enc));
-    return Readable.toWeb(Readable.fromWeb(body).pipe(enc));
+    setFlush(() => enc.flush());
+    return body.pipeThrough(Transform.toWeb(enc));
   }
   return body;
 }

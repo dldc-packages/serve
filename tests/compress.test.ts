@@ -64,9 +64,10 @@ test('compress with asyncIterable body', async () => {
       const compression = ctx.get(CompressionKey.Consumer);
       const body = createPushabledAsyncIterable<Uint8Array>();
       body.push(Uint8Array.from([1, 2, 3]));
+      body.push(Uint8Array.from([4, 5, 6]));
       compression?.flush();
       setTimeout(() => {
-        body.push(Uint8Array.from([4, 5, 6]));
+        body.push(Uint8Array.from([7, 8, 9]));
         compression?.flush();
         body.end();
       }, 100);
@@ -83,27 +84,15 @@ test('compress with asyncIterable body', async () => {
   assert(res.body);
   const reader = res.body.getReader();
   const message = await reader.read();
-  expect(message).toMatchInlineSnapshot(`
-    {
-      "done": false,
-      "value": Uint8Array [
-        1,
-        2,
-        3,
-      ],
-    }
-  `);
+  expect(message).toEqual({
+    done: false,
+    value: new Uint8Array([1, 2, 3, 4, 5, 6]),
+  });
   const message2 = await reader.read();
-  expect(message2).toMatchInlineSnapshot(`
-    {
-      "done": false,
-      "value": Uint8Array [
-        4,
-        5,
-        6,
-      ],
-    }
-  `);
+  expect(message2).toEqual({
+    done: false,
+    value: new Uint8Array([7, 8, 9]),
+  });
 
   await close();
 });
