@@ -1,6 +1,6 @@
+import { TransformStream } from 'stream/web';
 import { assert, expect, test } from 'vitest';
-import { Compression, CompressionKey, ZenResponse, compose, createNodeServer, json } from '../src/mod';
-import { createPushabledAsyncIterable } from './utils/asyncIterable';
+import { Compression, CompressionKey, HttpHeader, ZenResponse, compose, createNodeServer, json } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
 test('gzip', async () => {
@@ -62,17 +62,32 @@ test('compress with asyncIterable body', async () => {
   const server = createNodeServer(
     compose(Compression(), (ctx) => {
       const compression = ctx.get(CompressionKey.Consumer);
-      const body = createPushabledAsyncIterable<Uint8Array>();
-      body.push(Uint8Array.from([1, 2, 3]));
-      body.push(Uint8Array.from([4, 5, 6]));
-      compression?.flush();
-      setTimeout(() => {
-        body.push(Uint8Array.from([7, 8, 9]));
-        compression?.flush();
-        body.end();
-      }, 100);
-      return ZenResponse.create(body, {
-        headers: { 'content-type': 'application/octet-stream' },
+      const body = new TransformStream<Uint8Array | 'flush', Uint8Array>({
+        transform(chunk, controller) {
+          if (typeof chunk === 'string') {
+            compression?.flush();
+            return;
+          }
+          controller.enqueue(chunk);
+        },
+      });
+      async function sendData() {
+        const writer = body.writable.getWriter();
+        await writer.write(Uint8Array.from([1, 2, 3]));
+        await writer.write(Uint8Array.from([4, 5, 6]));
+        await writer.write('flush');
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        await writer.write(Uint8Array.from([7, 8, 9]));
+        await writer.close();
+      }
+      sendData().catch((err) => {
+        console.log(err);
+      });
+      return ZenResponse.create(body.readable, {
+        headers: {
+          [HttpHeader.Connection]: 'keep-alive',
+          'content-type': 'application/octet-stream',
+        },
       });
     }),
   );
@@ -94,5 +109,52 @@ test('compress with asyncIterable body', async () => {
     value: new Uint8Array([7, 8, 9]),
   });
 
+  await close();
+});
+
+test('compress with asyncIterable body aborted', async () => {
+  const server = createNodeServer(
+    compose(Compression(), (ctx) => {
+      const compression = ctx.get(CompressionKey.Consumer);
+      const body = new TransformStream<Uint8Array | 'flush', Uint8Array>({
+        transform(chunk, controller) {
+          if (typeof chunk === 'string') {
+            compression?.flush();
+            return;
+          }
+          controller.enqueue(chunk);
+        },
+      });
+      async function sendData() {
+        const writer = body.writable.getWriter();
+        await writer.write(Uint8Array.from([1, 2, 3]));
+        await writer.write(Uint8Array.from([4, 5, 6]));
+        await writer.write('flush');
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        await writer.write(Uint8Array.from([7, 8, 9]));
+      }
+      sendData().catch((err) => {
+        console.log(err);
+      });
+      return ZenResponse.create(body.readable, {
+        headers: {
+          [HttpHeader.Connection]: 'keep-alive',
+          'content-type': 'application/octet-stream',
+        },
+      });
+    }),
+  );
+  const { close, url, fetch } = await mountServer(server);
+
+  const controller = new AbortController();
+  const res = await fetch(url, { headers: { 'accept-encoding': 'deflate' }, signal: controller.signal });
+  assert(res.body);
+  const reader = res.body.getReader();
+  const message = await reader.read();
+  expect(message).toEqual({
+    done: false,
+    value: new Uint8Array([1, 2, 3, 4, 5, 6]),
+  });
+  controller.abort();
   await close();
 });
