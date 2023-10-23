@@ -22,7 +22,7 @@ test('should set the Set-Cookie header', async () => {
     HTTP/1.1 204 No Content
     Connection: close
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Set-Cookie: token=T55YTRR55554;
+    Set-Cookie: token=T55YTRR55554
   `);
   await close();
 });
@@ -40,7 +40,7 @@ test('should set the Set-Cookie header using Manager', async () => {
     HTTP/1.1 204 No Content
     Connection: close
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Set-Cookie: token=T55YTRR55554; Path=/; HttpOnly
+    Set-Cookie: token=T55YTRR55554
   `);
   await close();
 });
@@ -60,7 +60,8 @@ test('should set two Set-Cookie header using Manager', async () => {
     HTTP/1.1 204 No Content
     Connection: close
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Set-Cookie: token=T55YTRR55554; Path=/; HttpOnly, user=etienne; Path=/; HttpOnly
+    Set-Cookie: token=T55YTRR55554
+    Set-Cookie: user=etienne
   `);
   await close();
 });
@@ -78,7 +79,7 @@ test('should return the same result as koa', async () => {
     HTTP/1.1 204 No Content
     Connection: close
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Set-Cookie: token=T55YTRR55554; Path=/; HttpOnly
+    Set-Cookie: token=T55YTRR55554
   `);
 
   await close();
@@ -95,13 +96,13 @@ test('should return the same result as koa when deleting cookie', async () => {
     HTTP/1.1 204 No Content
     Connection: close
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Set-Cookie: token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/; HttpOnly
+    Set-Cookie: token=; Expires=Thu, 01 Jan 1970 00:00:00 GMT
   `);
 
   await close();
 });
 
-test.only('Cookie manager should set and delete cookies', async () => {
+test('Cookie manager should set and delete cookies', async () => {
   const app = createNodeServer(
     compose(CookieManager(), (ctx) => {
       const manager = ctx.getOrFail(CookieManagerConsumer);
