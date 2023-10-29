@@ -9,15 +9,12 @@ export function CorsActual(config: CorsActualConfig = {}): Middleware {
 
   return async (ctx, next) => {
     const origin = ctx.headers.get(HttpHeader.Origin);
-
     const response = await next(ctx);
-
     const cors = resolver(origin);
     // invalid origin, continue without any cors header
     if (cors === false) {
       return response;
     }
-
     return withCorsActual(response, cors);
   };
 }

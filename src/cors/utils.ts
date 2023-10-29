@@ -1,15 +1,18 @@
 import {
+  DEFAULT_ALLOW_CREDENTIALS,
   DEFAULT_ALLOW_HEADERS,
   DEFAULT_ALLOW_METHODS,
   DEFAULT_ALLOW_ORIGIN,
-  DEFAULT_MAX_AGE_SECONDS,
-  DEFAULT_ALLOW_CREDENTIALS,
   DEFAULT_EXPOSE_HEADERS,
+  DEFAULT_MAX_AGE_SECONDS,
 } from './defaults';
 
 type OriginMatcher = (requestOrigin: string | null | undefined) => boolean;
 
-export function createOriginMatcher(allowedOrigins: Array<string | RegExp>): OriginMatcher {
+export function createOriginMatcher(allowedOrigins: Array<string | RegExp> | true): OriginMatcher {
+  if (allowedOrigins === true) {
+    return () => true;
+  }
   // pre-compile list of matchers, so regexes are only built once
   const matchers = allowedOrigins.map(createSingleOriginMatcher);
   // does a given request Origin match the list?
@@ -36,7 +39,7 @@ function createSingleOriginMatcher(allowedOrigin: string | RegExp): (origin: str
 }
 
 export interface CorsActualConfig {
-  allowOrigin?: Array<string | RegExp>;
+  allowOrigin?: Array<string | RegExp> | true;
   allowCredentials?: boolean;
   exposeHeaders?: Array<string>;
 }
@@ -67,6 +70,7 @@ export function createActualConfigResolver(
     allowCredentials = DEFAULT_ALLOW_CREDENTIALS,
     exposeHeaders = DEFAULT_EXPOSE_HEADERS,
   } = config;
+
   const originMatcher = createOriginMatcher(allowOrigin);
   return (origin: string | null | undefined): CorsActualConfigResolved | false => {
     if (!origin || !originMatcher(origin)) {

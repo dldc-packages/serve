@@ -98,6 +98,27 @@ describe('CORS: simple / actual requests', () => {
     await close();
   });
 
+  test('Sets Allow-Origin headers if allowOrigin is true (wildcard)', async () => {
+    const app = createCorsServer({
+      allowOrigin: true,
+    });
+    const { url, close, fetch } = await mountServer(app);
+    const res = await fetch(url, {
+      headers: {
+        Origin: 'http://api.myapp.com',
+      },
+    });
+    expect(res).toMatchInlineSnapshot(`
+      HTTP/1.1 200 OK
+      Access-Control-Allow-Origin: http://api.myapp.com
+      Connection: close
+      Content-Type: text/plain;charset=UTF-8
+      Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+      Transfer-Encoding: chunked
+    `);
+    await close();
+  });
+
   test('6.1.3 Sets Access-Control-Allow-Credentials header if configured', async () => {
     const app = createCorsServer({
       allowOrigin: ['http://api.myapp.com'],
