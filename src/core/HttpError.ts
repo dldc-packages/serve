@@ -34,9 +34,10 @@ export const HttpError = (() => {
   function createHttpError(codeOrName: HttpStatusCode | HttpStatusName = 500, message?: HttpStatusMessage) {
     const code: HttpStatusCode = typeof codeOrName === 'number' ? codeOrName : HttpStatus.fromName(codeOrName).code;
     const status = HttpStatus.fromCode(code);
-    return Erreur.createWith(HttpErrorKey, { code, name: status.name, message: message ?? status.message })
-      .withName('HttpError')
-      .withMessage(`${code} ${status.name}`);
+    const fullMessage = `${code} ${status.name}${message ? `: ${message}` : ''}`;
+    return Erreur.create(new Error(fullMessage))
+      .with(HttpErrorKey.Provider({ code, name: status.name, message: message ?? status.message }))
+      .withName('HttpError');
   }
 
   const UnauthorizedKey = Key.create<IUnauthorized>('Unauthorized');
