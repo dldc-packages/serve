@@ -1,12 +1,4 @@
-export {
-  Chemin,
-  CheminParam,
-  cheminParamsEqual,
-  cheminsEqual,
-  splitPathname,
-  type IChemin,
-  type ICheminMatch,
-  type ICheminParamBase,
-  type TCheminMatchMaybe,
-  type TCheminParamAny,
-} from '@dldc/chemin';
+import * as Chemin from '@dldc/chemin';
+export { chemin } from '@dldc/chemin';
+
+export { Chemin };

@@ -13,6 +13,7 @@ import {
   JsonParser,
   Route,
   Router,
+  chemin,
   compose,
   createNodeServer,
   json,
@@ -33,7 +34,7 @@ test('real life 2', async () => {
       CookieManager(),
       Router(
         AllowedMethodsRoutes([
-          Route.POST('login', () => {
+          Route.POST(chemin('login'), () => {
             return json({ success: true });
           }),
           Route.fallback(() => {

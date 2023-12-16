@@ -1,5 +1,5 @@
 import type { IChemin } from '@dldc/chemin';
-import { Chemin, splitPathname } from '@dldc/chemin';
+import { chemin, equal as cheminEqual, splitPathname } from '@dldc/chemin';
 import type { Middleware } from '../core/mod';
 import { HttpMethod, compose } from '../core/mod';
 
@@ -21,7 +21,7 @@ export type Routes = Array<Route>;
 
 const withMethod =
   (method: HttpMethod) =>
-  (pattern: IChemin | string | null, ...middleware: Array<Middleware>) =>
+  (pattern: IChemin | null, ...middleware: Array<Middleware>) =>
     createRoute({ pattern, exact: true, method }, middleware);
 
 export const Route = {
@@ -37,7 +37,7 @@ export const Route = {
     return routes.map(
       (route): Route => ({
         ...route,
-        pattern: route.pattern === null ? Chemin.create(pattern) : Chemin.create(pattern, route.pattern),
+        pattern: route.pattern === null ? chemin(pattern) : chemin(pattern, route.pattern),
       }),
     );
   },
@@ -56,16 +56,15 @@ function createRoute(
     exact = true,
   }: {
     isFallback?: boolean;
-    pattern?: IChemin | string | null;
+    pattern?: IChemin | null;
     method?: HttpMethod | null;
     exact?: boolean;
   },
   middleware: Middleware | Array<Middleware>,
 ): Route {
-  const patternResolved = typeof pattern === 'string' ? Chemin.parse(pattern) : pattern;
   return {
     [ROUTE_TOKEN]: true,
-    pattern: patternResolved,
+    pattern,
     middleware: resolveMiddleware(middleware),
     method,
     exact,
@@ -99,7 +98,7 @@ function find(routes: Array<Route>, pathname: string, method: HttpMethod | null)
         };
       }
       const pathMatch = route.pattern.match(parts);
-      if (pathMatch === false) {
+      if (pathMatch === null) {
         return false;
       }
       if (route.exact && pathMatch.rest.length > 0) {
@@ -132,7 +131,7 @@ function groupByPattern(routes: Array<Route>): Array<GroupResult> {
     const exist =
       pattern === null
         ? result.find((item) => item.pattern === null)
-        : result.find((item) => item.pattern !== null && item.pattern.equal(pattern));
+        : result.find((item) => item.pattern !== null && cheminEqual(item.pattern, pattern));
     if (exist) {
       exist.routes.push(route);
     } else {
