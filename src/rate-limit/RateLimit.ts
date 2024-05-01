@@ -1,4 +1,4 @@
-import { HttpError } from '../core/mod';
+import { createTooManyRequests } from '../mod';
 import type { LimitStrategy } from './LimitStrategy';
 
 export interface GlobalRateLimit<S> {
@@ -58,7 +58,7 @@ function create<K, S>(options: RateLimitOptions<K, S>): RateLimit<K, S> {
       }
       if (!allowed) {
         const reason = errorMessage ? errorMessage(key, nextState) : undefined;
-        throw HttpError.TooManyRequests.create(reason);
+        throw createTooManyRequests(reason);
       }
       return nextState;
     },

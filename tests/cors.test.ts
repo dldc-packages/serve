@@ -4,12 +4,13 @@ import {
   CorsActual,
   CorsPreflight,
   ErrorToHttpError,
-  HttpError,
   HttpErrorToTextResponse,
   HttpMethod,
   ZenResponse,
   compose,
+  createHttpErreur,
   createNodeServer,
+  createNotFound,
 } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
@@ -194,7 +195,7 @@ describe('CORS: preflight requests', () => {
         if (ctx.method === HttpMethod.POST) {
           return ZenResponse.create('Hello');
         }
-        throw HttpError.create(405);
+        throw createHttpErreur(405);
       }),
     );
   }
@@ -431,7 +432,7 @@ describe('CorsPackage', () => {
   test('handle error', async () => {
     const app = createNodeServer(
       compose(CorsActual(), CorsPreflight(), HttpErrorToTextResponse(), ErrorToHttpError(), () => {
-        throw HttpError.NotFound.create();
+        throw createNotFound();
       }),
     );
     const { url, close, fetch } = await mountServer(app);
@@ -454,7 +455,7 @@ describe('CorsPackage', () => {
   test('handle error on preflight', async () => {
     const app = createNodeServer(
       compose(CorsActual(), CorsPreflight(), () => {
-        throw HttpError.NotFound.create();
+        throw createNotFound();
       }),
     );
     const { url, close, fetch } = await mountServer(app);

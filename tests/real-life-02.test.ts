@@ -7,7 +7,6 @@ import {
   CorsActual,
   CorsPreflight,
   ErrorToHttpError,
-  HttpError,
   HttpErrorToJsonResponse,
   InvalidResponseToHttpError,
   JsonParser,
@@ -16,6 +15,7 @@ import {
   chemin,
   compose,
   createNodeServer,
+  createNotFound,
   json,
 } from '../src/mod';
 import { mountServer } from './utils/mountServer';
@@ -38,7 +38,7 @@ test('real life 2', async () => {
             return json({ success: true });
           }),
           Route.fallback(() => {
-            throw HttpError.NotFound.create();
+            throw createNotFound();
           }),
         ]),
       ),

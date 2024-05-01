@@ -1,6 +1,6 @@
-import { Erreur } from '@dldc/erreur';
+import { toError } from '@dldc/erreur';
 import type { Middleware } from '../core/mod';
-import { HttpError, ZenResponse } from '../core/mod';
+import { HttpErreur, ZenResponse } from '../core/mod';
 
 /**
  * Handle HttpError and respond with a Text reponse
@@ -10,8 +10,8 @@ export function HttpErrorToTextResponse(): Middleware {
     try {
       return await next(ctx);
     } catch (error) {
-      const err = Erreur.createFromUnknown(error);
-      const httpError = err.get(HttpError.Key.Consumer);
+      const err = toError(error);
+      const httpError = HttpErreur.get(err);
       if (httpError) {
         return ZenResponse.create(`Error ${httpError.code} ${httpError.message}`, { status: httpError.code });
       }

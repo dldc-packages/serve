@@ -1,12 +1,12 @@
 import { expect, test } from 'vitest';
 import {
   ErrorToHttpError,
-  HttpError,
   HttpErrorToTextResponse,
   HttpMethod,
   ZenResponse,
   compose,
   createNodeServer,
+  createNotFound,
   noContent,
 } from '../src/mod';
 import { mountServer } from './utils/mountServer';
@@ -104,7 +104,7 @@ test('head request return 204 & empty body', async () => {
 test('throw HttpError return an error', async () => {
   const server = createNodeServer(
     compose(HttpErrorToTextResponse(), () => {
-      throw HttpError.NotFound.create();
+      throw createNotFound();
     }),
   );
   const { close, url, fetch } = await mountServer(server);

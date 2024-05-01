@@ -1,13 +1,13 @@
 export {
   Key,
-  type IKeyBase,
-  type IKeyConsumer,
-  type IKeyProvider,
   type TKey,
+  type TKeyBase,
+  type TKeyConsumer,
+  type TKeyProvider,
   type TKeyProviderFn,
   type TVoidKey,
 } from '@dldc/stack';
-export * from './HttpError';
+export * from './HttpErreur';
 export * from './HttpHeaders';
 export * from './HttpMethod';
 export * from './HttpStatus';

@@ -6,7 +6,6 @@ import {
   CorsActual,
   CorsPreflight,
   ErrorToHttpError,
-  HttpError,
   HttpErrorToTextResponse,
   InvalidResponseToHttpError,
   Route,
@@ -15,6 +14,7 @@ import {
   chemin,
   compose,
   createNodeServer,
+  createNotFound,
 } from '../src/mod';
 import { mountServer } from './utils/mountServer';
 
@@ -42,7 +42,7 @@ test('real life', async () => {
             return ZenResponse.create('TODO');
           }),
           Route.fallback(() => {
-            throw HttpError.NotFound.create();
+            throw createNotFound();
           }),
         ]),
       ),

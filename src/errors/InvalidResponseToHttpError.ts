@@ -1,5 +1,5 @@
 import type { Middleware } from '../core/mod';
-import { HttpError, ZenResponse } from '../core/mod';
+import { ZenResponse, createInternalServerError, createServerDidNotRespond } from '../core/mod';
 import { LoggerConsumer } from '../logger/mod';
 
 /**
@@ -10,12 +10,12 @@ export function InvalidResponseToHttpError(): Middleware {
     const logger = ctx.get(LoggerConsumer);
     const response = await next(ctx);
     if (response === null || response === undefined) {
-      const err = HttpError.ServerDidNotRespond.create();
+      const err = createServerDidNotRespond();
       logger.error(err);
       throw err;
     }
     if (response instanceof ZenResponse === false) {
-      const err = HttpError.InternalServerError.create(
+      const err = createInternalServerError(
         `The returned response is not valid (does not inherit the ZenResponse class)`,
       );
       logger.info(response);
