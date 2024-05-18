@@ -1,8 +1,7 @@
-import { sanitize as defaultSanitize } from '@dldc/zenjson';
-import type { ResponseInit } from 'undici';
-import type { ZenContext, ZenResponse } from '../core/mod';
-import { json } from '../json/mod';
-import { ZenjsonConfig } from './ZenjsonParser';
+import { sanitize as defaultSanitize } from "@dldc/zenjson";
+import type { ZenContext, ZenResponse } from "../core/mod.ts";
+import { json } from "../json/mod.ts";
+import { ZenjsonConfig } from "./ZenjsonParser.ts";
 
 interface IOptions extends ResponseInit {
   sanitize?: typeof defaultSanitize;

@@ -1,7 +1,9 @@
-import { Key, ZenResponse } from '../core/mod';
+import { createEmptyKey, ZenResponse } from "../core/mod.ts";
 
-export const SkipRouteKey = Key.createEmpty('SkipRoute');
+export const SkipRouteKey = createEmptyKey("SkipRoute");
 
 export function skipRoute() {
-  return ZenResponse.create(null, { status: 404 }).with(SkipRouteKey.Provider());
+  return ZenResponse.create(null, { status: 404 }).with(
+    SkipRouteKey.Provider(),
+  );
 }

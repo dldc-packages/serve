@@ -1,18 +1,14 @@
-import { Key } from '@dldc/stack';
-import type { Middleware } from '../core/mod';
-import { HttpHeader } from '../core/mod';
-import { ContentEncoding } from './ContentEnconding';
-import { compress } from './compress';
-
-export type TFlush = () => void;
+import type { Middleware } from "../core/mod.ts";
+import { createKey, HttpHeader } from "../core/mod.ts";
+import { ContentEncoding } from "./ContentEnconding.ts";
+import { compress } from "./compress.ts";
 
 export interface ICompression {
   readonly acceptedEncoding: readonly ContentEncoding[];
   readonly usedEncoding: null | ContentEncoding;
-  readonly flush: TFlush;
 }
 
-export const CompressionKey = Key.create<ICompression>('Compress');
+export const CompressionKey = createKey<ICompression>("Compress");
 export const CompressConsumer = CompressionKey.Consumer;
 
 /**
@@ -22,16 +18,14 @@ export function Compression(): Middleware {
   return async (ctx, next) => {
     const acceptedEncodingHeader = ctx.headers.get(HttpHeader.AcceptEncoding);
     const acceptedEncoding: Array<ContentEncoding> =
-      typeof acceptedEncodingHeader === 'string'
+      typeof acceptedEncodingHeader === "string"
         ? (acceptedEncodingHeader.split(/, ?/) as any)
         : [ContentEncoding.Identity];
 
     const usedEncoding = selectEncoding(acceptedEncoding);
-    const flushDeferred = createDeferredFlush();
     const compressCtx: ICompression = {
       acceptedEncoding,
       usedEncoding,
-      flush: flushDeferred.flush,
     };
 
     const response = await next(ctx.with(CompressionKey.Provider(compressCtx)));
@@ -39,11 +33,13 @@ export function Compression(): Middleware {
       // no response = do nothing
       return response;
     }
-    return compress(response, usedEncoding, flushDeferred.setFlush);
+    return compress(response, usedEncoding);
   };
 }
 
-function selectEncoding(acceptedEncoding: Array<ContentEncoding>): ContentEncoding {
+function selectEncoding(
+  acceptedEncoding: Array<ContentEncoding>,
+): ContentEncoding {
   if (acceptedEncoding.indexOf(ContentEncoding.Brotli) >= 0) {
     return ContentEncoding.Brotli;
   }
@@ -54,35 +50,4 @@ function selectEncoding(acceptedEncoding: Array<ContentEncoding>): ContentEncodi
     return ContentEncoding.Deflate;
   }
   return ContentEncoding.Identity;
-}
-
-interface IDeferredFlush {
-  flush: TFlush;
-  setFlush: (f: TFlush) => void;
-}
-
-function createDeferredFlush(): IDeferredFlush {
-  let flushFn: TFlush | null = null;
-  // flush requested before flush was set
-  let requested = false;
-
-  return {
-    flush,
-    setFlush,
-  };
-
-  function setFlush(f: TFlush) {
-    flushFn = f;
-    if (requested) {
-      flushFn();
-    }
-  }
-
-  function flush() {
-    if (flushFn === null) {
-      requested = true;
-      return;
-    }
-    flushFn();
-  }
 }

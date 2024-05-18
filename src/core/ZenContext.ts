@@ -1,10 +1,8 @@
-import type { TKeyProvider, TStackCoreValue } from '@dldc/stack';
-import { Key, Stack } from '@dldc/stack';
-import type { ReadableStream } from 'node:stream/web';
-import type { Headers, Request } from 'undici';
-import type { HttpMethod } from './HttpMethod';
+import type { TKeyProvider, TStackCoreValue } from "@dldc/stack";
+import { createKey, Stack } from "@dldc/stack";
+import type { HttpMethod } from "./HttpMethod.ts";
 
-const RequestKey = Key.create<Request>('Request');
+const RequestKey = createKey<Request>("Request");
 
 export class ZenContext extends Stack {
   static fromRequest(request: Request): ZenContext {

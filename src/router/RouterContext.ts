@@ -1,5 +1,5 @@
-import type { IChemin } from '@dldc/chemin';
-import { Key } from '../core/mod';
+import type { IChemin } from "@dldc/chemin";
+import { createKey } from "../core/mod.ts";
 
 export interface Params {
   [key: string]: unknown;
@@ -14,5 +14,5 @@ export interface RouterContext {
   has(chemin: IChemin): boolean;
 }
 
-export const RouterKey = Key.create<RouterContext>('Router');
+export const RouterKey = createKey<RouterContext>("Router");
 export const RouterConsumer = RouterKey.Consumer;

@@ -5,11 +5,13 @@ import {
   DEFAULT_ALLOW_ORIGIN,
   DEFAULT_EXPOSE_HEADERS,
   DEFAULT_MAX_AGE_SECONDS,
-} from './defaults';
+} from "./defaults.ts";
 
 type OriginMatcher = (requestOrigin: string | null | undefined) => boolean;
 
-export function createOriginMatcher(allowedOrigins: Array<string | RegExp> | true): OriginMatcher {
+export function createOriginMatcher(
+  allowedOrigins: Array<string | RegExp> | true,
+): OriginMatcher {
   if (allowedOrigins === true) {
     return () => true;
   }
@@ -25,15 +27,18 @@ export function createOriginMatcher(allowedOrigins: Array<string | RegExp> | tru
   };
 }
 
-function createSingleOriginMatcher(allowedOrigin: string | RegExp): (origin: string) => boolean {
+function createSingleOriginMatcher(
+  allowedOrigin: string | RegExp,
+): (origin: string) => boolean {
   if (allowedOrigin instanceof RegExp) {
     return (requestOrigin) => Boolean(requestOrigin.match(allowedOrigin));
-  } else if (allowedOrigin.indexOf('*') === -1) {
+  } else if (allowedOrigin.indexOf("*") === -1) {
     // simple string comparison
     return (requestOrigin) => requestOrigin === allowedOrigin;
   } else {
     // need to build a regex *.foo.com
-    const regex = '^' + allowedOrigin.replace('.', '\\.').replace('*', '.*') + '$';
+    const regex = "^" + allowedOrigin.replace(".", "\\.").replace("*", ".*") +
+      "$";
     return (requestOrigin) => Boolean(requestOrigin.match(regex));
   }
 }
@@ -72,7 +77,9 @@ export function createActualConfigResolver(
   } = config;
 
   const originMatcher = createOriginMatcher(allowOrigin);
-  return (origin: string | null | undefined): CorsActualConfigResolved | false => {
+  return (
+    origin: string | null | undefined,
+  ): CorsActualConfigResolved | false => {
     if (!origin || !originMatcher(origin)) {
       return false;
     }
@@ -88,7 +95,9 @@ export function createPreflightConfigResolver(
   config: CorsPreflightConfig,
 ): (origin: string | null | undefined) => CorsPreflightConfigResolved | false {
   const actualResolver = createActualConfigResolver(config);
-  return (origin: string | null | undefined): CorsPreflightConfigResolved | false => {
+  return (
+    origin: string | null | undefined,
+  ): CorsPreflightConfigResolved | false => {
     const actual = actualResolver(origin);
     if (actual === false) {
       return false;

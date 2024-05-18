@@ -1,4 +1,4 @@
-import { Key } from '@dldc/stack';
+import { createKeyWithDefault } from "../core/mod.ts";
 
 export type Logger = {
   log(...data: Array<any>): void;
@@ -7,16 +7,11 @@ export type Logger = {
   warn(...data: Array<any>): void;
 };
 
-const IS_TEST = process.env.NODE_ENV === 'test';
-
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
-
-export const LoggerContext = Key.createWithDefault<Logger>('Logger', {
-  error: IS_TEST ? noop : console.error,
-  info: IS_TEST ? noop : console.info,
-  log: IS_TEST ? noop : console.log,
-  warn: IS_TEST ? noop : console.warn,
+export const LoggerContext = createKeyWithDefault<Logger>("Logger", {
+  error: console.error,
+  info: console.info,
+  log: console.log,
+  warn: console.warn,
 });
 
 export const LoggerConsumer = LoggerContext.Consumer;

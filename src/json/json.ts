@@ -1,16 +1,18 @@
-import type { ResponseInit } from 'undici';
-import { Headers } from 'undici';
-import { Key, ZenResponse } from '../core/mod';
+import { createKey, ZenResponse } from "../core/mod.ts";
 
-const JsonKey = Key.create<unknown>('Json');
+const JsonKey = createKey<unknown>("Json");
 
-export function json<Data = unknown>(data: Data, init: number | ResponseInit = {}): ZenResponse {
-  const responseInit = typeof init === 'number' ? { status: init } : init;
+export function json<Data = unknown>(
+  data: Data,
+  init: number | ResponseInit = {},
+): ZenResponse {
+  const responseInit = typeof init === "number" ? { status: init } : init;
 
   const headers = new Headers(responseInit.headers);
-  if (!headers.has('Content-Type')) {
-    headers.set('Content-Type', 'application/json; charset=utf-8');
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json; charset=utf-8");
   }
 
-  return ZenResponse.create(JSON.stringify(data), { ...responseInit, headers }).with(JsonKey.Provider(data));
+  return ZenResponse.create(JSON.stringify(data), { ...responseInit, headers })
+    .with(JsonKey.Provider(data));
 }

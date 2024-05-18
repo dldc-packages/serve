@@ -1,2 +1,2 @@
-export * from './ContentType';
-export * from './MimeType';
+export * from "./ContentType.ts";
+export * from "./MimeType.ts";

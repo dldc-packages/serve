@@ -1,8 +1,11 @@
-import type { Cookie } from 'undici';
-import { Headers, getSetCookies, setCookie } from 'undici';
-import type { ZenResponse } from '../mod';
+import type { Cookie } from "@std/http";
+import { getSetCookies, setCookie } from "@std/http";
+import type { ZenResponse } from "../core/mod.ts";
 
-export function withSetCookies(res: ZenResponse, setCookies: Cookie[]): ZenResponse {
+export function withSetCookies(
+  res: ZenResponse,
+  setCookies: Cookie[],
+): ZenResponse {
   if (setCookies.length === 0) {
     return res;
   }

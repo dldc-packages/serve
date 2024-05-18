@@ -1,13 +1,11 @@
-import type { TStackCoreValue } from '@dldc/stack';
-import { Key, Stack } from '@dldc/stack';
-import type { BodyInit, ResponseInit } from 'undici';
-import { Headers, Response } from 'undici';
+import type { TStackCoreValue } from "@dldc/stack";
+import { createKey, Stack } from "@dldc/stack";
 
-const BodyKey = Key.create<BodyInit>('Body');
-const HeadersKey = Key.create<Headers>('Headers');
-const StatusKey = Key.create<number>('Status');
-const StatusTextKey = Key.create<string>('StatusText');
-const RedirectKey = Key.create<{ url: string; status: number }>('Redirect');
+const BodyKey = createKey<BodyInit>("Body");
+const HeadersKey = createKey<Headers>("Headers");
+const StatusKey = createKey<number>("Status");
+const StatusTextKey = createKey<string>("StatusText");
+const RedirectKey = createKey<{ url: string; status: number }>("Redirect");
 
 export class ZenResponse extends Stack {
   static create(body?: BodyInit | null, init?: ResponseInit): ZenResponse {
@@ -67,18 +65,23 @@ export class ZenResponse extends Stack {
   }
 }
 
-export function redirect(url: string, init: number | ResponseInit = 302): ZenResponse {
-  const status = typeof init === 'number' ? init : init.status ?? 302;
+export function redirect(
+  url: string,
+  init: number | ResponseInit = 302,
+): ZenResponse {
+  const status = typeof init === "number" ? init : init.status ?? 302;
 
-  let responseInit: ResponseInit = typeof init === 'number' ? {} : init;
-  if (typeof responseInit.status === 'undefined') {
+  let responseInit: ResponseInit = typeof init === "number" ? {} : init;
+  if (typeof responseInit.status === "undefined") {
     responseInit = { ...responseInit, status };
   }
 
   const headers = new Headers(responseInit.headers);
-  headers.set('Location', url);
+  headers.set("Location", url);
 
-  return ZenResponse.create(null, { ...responseInit, headers }).with(RedirectKey.Provider({ url, status }));
+  return ZenResponse.create(null, { ...responseInit, headers }).with(
+    RedirectKey.Provider({ url, status }),
+  );
 }
 
 export function noContent(init: ResponseInit = {}): ZenResponse {

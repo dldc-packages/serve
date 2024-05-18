@@ -1,4 +1,8 @@
-export { RateLimit } from './RateLimit';
-export type { RateLimitOptions, GlobalRateLimit, GlobalRateLimitOptions } from './RateLimit';
-export { LimitStrategy } from './LimitStrategy';
-export type { LimitStrategyReturn } from './LimitStrategy';
+export { LimitStrategy } from "./LimitStrategy.ts";
+export type { LimitStrategyReturn } from "./LimitStrategy.ts";
+export { RateLimit } from "./RateLimit.ts";
+export type {
+  GlobalRateLimit,
+  GlobalRateLimitOptions,
+  RateLimitOptions,
+} from "./RateLimit.ts";

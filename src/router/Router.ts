@@ -1,20 +1,20 @@
-import type { IChemin } from '@dldc/chemin';
-import { URL } from 'node:url';
-import type { Middleware, ZenResult } from '../core/mod';
-import type { FindResult, Routes } from './Route';
-import { Route } from './Route';
-import type { RouterContext } from './RouterContext';
-import { RouterKey } from './RouterContext';
-import { SkipRouteKey } from './skipRoute';
+import type { IChemin } from "@dldc/chemin";
+import { URL } from "node:url";
+import type { Middleware, ZenResult } from "../core/mod.ts";
+import type { FindResult, Routes } from "./Route.ts";
+import { Route } from "./Route.ts";
+import type { RouterContext } from "./RouterContext.ts";
+import { RouterKey } from "./RouterContext.ts";
+import { SkipRouteKey } from "./skipRoute.ts";
 
 export function Router(routes: Routes): Middleware {
-  return async (ctx, next): Promise<ZenResult> => {
+  return (ctx, next): Promise<ZenResult> => {
     if (ctx.has(RouterKey.Consumer)) {
       console.warn(
         [
           `Warning: Using a Router inside another Router will break 'Allow' header and CORS !`,
           `If you want to group routes together you can use Route.namespace() or the low level Route.create()`,
-        ].join('\n'),
+        ].join("\n"),
       );
     }
 

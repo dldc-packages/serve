@@ -1,17 +1,20 @@
-import { ContentType, MimeType } from '../content-type/mod';
-import type { Middleware, ZenResult } from '../core/mod';
-import { HttpHeader, HttpMethod, Key } from '../core/mod';
+import { ContentType, MimeType } from "../content-type/mod.ts";
+import type { Middleware, ZenResult } from "../core/mod.ts";
+import { createKey, HttpHeader, HttpMethod } from "../core/mod.ts";
 
 export type GetJsonBody = () => Promise<any>;
 
-export const GetJsonBodyKey = Key.create<GetJsonBody>('JsonParser');
+export const GetJsonBodyKey = createKey<GetJsonBody>("JsonParser");
 export const GetJsonBodyKeyConsumer = GetJsonBodyKey.Consumer;
 
 export function JsonParser(): Middleware {
-  return async (ctx, next): Promise<ZenResult> => {
+  return (ctx, next): Promise<ZenResult> => {
     const headers = ctx.headers;
 
-    if (ctx.method === HttpMethod.GET || ctx.method === HttpMethod.DELETE || ctx.method === HttpMethod.OPTIONS) {
+    if (
+      ctx.method === HttpMethod.GET || ctx.method === HttpMethod.DELETE ||
+      ctx.method === HttpMethod.OPTIONS
+    ) {
       return next(ctx);
     }
 
@@ -23,7 +26,8 @@ export function JsonParser(): Middleware {
     }
 
     const parsedContentType = ContentType.parse(contentType);
-    const isJsonContentType = parsedContentType.type === MimeType.fromExtension('json');
+    const isJsonContentType =
+      parsedContentType.type === MimeType.fromExtension("json");
     if (!isJsonContentType) {
       return next(ctx);
     }

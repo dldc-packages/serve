@@ -1,10 +1,11 @@
-import { Headers } from 'undici';
-import type { HttpMethod, ZenResponse } from '../mod';
-import { HttpHeader } from '../mod';
-import { RouterAllowedMethodsKey } from './AllowedMethodsRoutes';
+import { HttpHeader, type HttpMethod, type ZenResponse } from "../core/mod.ts";
+import { RouterAllowedMethodsKey } from "./AllowedMethodsRoutes.ts";
 
-export function withAllowedMethods(response: ZenResponse, allowedMethods: Set<HttpMethod>): ZenResponse {
-  const allowHeaderContent = Array.from(allowedMethods.values()).join(',');
+export function withAllowedMethods(
+  response: ZenResponse,
+  allowedMethods: Set<HttpMethod>,
+): ZenResponse {
+  const allowHeaderContent = Array.from(allowedMethods.values()).join(",");
   return response
     .withHeaders((prev) => {
       const headers = new Headers(prev);

@@ -1,8 +1,8 @@
-import type { Middleware } from '../core/mod';
-import { HttpHeader } from '../core/mod';
-import type { CorsActualConfig } from './utils';
-import { createActualConfigResolver } from './utils';
-import { withCorsActual } from './withCorsActual';
+import type { Middleware } from "../core/mod.ts";
+import { HttpHeader } from "../core/mod.ts";
+import type { CorsActualConfig } from "./utils.ts";
+import { createActualConfigResolver } from "./utils.ts";
+import { withCorsActual } from "./withCorsActual.ts";
 
 export function CorsActual(config: CorsActualConfig = {}): Middleware {
   const resolver = createActualConfigResolver(config);

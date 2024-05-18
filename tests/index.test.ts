@@ -1,140 +1,171 @@
-import { expect, test } from 'vitest';
+import { expect } from "@std/expect";
 import {
+  compose,
+  createHandler,
+  createNotFound,
   ErrorToHttpError,
   HttpErrorToTextResponse,
   HttpMethod,
-  ZenResponse,
-  compose,
-  createNodeServer,
-  createNotFound,
   noContent,
-} from '../src/mod';
-import { mountServer } from './utils/mountServer';
+  ZenResponse,
+} from "../mod.ts";
+import { dedent } from "./utils/dedent.ts";
+import { expectHeaders } from "./utils/expectHeaders.ts";
+import { mountServer } from "./utils/mountServer.ts";
+import { printHttpHeaders } from "./utils/printHttpHeaders.ts";
 
-test('create a server without crashing', () => {
-  expect(() => createNodeServer(() => noContent())).not.toThrowError();
+Deno.test("create hanlder without crashing", () => {
+  expect(() => createHandler(() => noContent())).not.toThrow();
 });
 
-test('simple text response', async () => {
-  const server = createNodeServer(() => ZenResponse.create('Hey'));
-  const { url, close, fetch } = await mountServer(server);
+Deno.test("simple text response", async () => {
+  const handler = createHandler(() => ZenResponse.create("Hey"));
+  const { url, close, fetch } = mountServer(handler);
   const res = await fetch(url);
-  expect(await res.text()).toBe('Hey');
-  expect(res).toMatchInlineSnapshot(`
+
+  expect(await res.text()).toBe("Hey");
+
+  expectHeaders(
+    res,
+    `
     HTTP/1.1 200 OK
-    Connection: close
+    Content-Length: 3
     Content-Type: text/plain;charset=UTF-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
+    Vary: Accept-Encoding
+  `,
+  );
   await close();
 });
 
-test('send two requests', async () => {
-  const server = createNodeServer(() => ZenResponse.create('Hey'));
-  const { url, close, fetch } = await mountServer(server);
+Deno.test("send two requests", async () => {
+  const handler = createHandler(() => ZenResponse.create("Hey"));
+  const { url, close, fetch } = mountServer(handler);
 
   const res = await fetch(url);
-  expect(res).toMatchInlineSnapshot(`
+  expectHeaders(
+    res,
+    `
     HTTP/1.1 200 OK
-    Connection: close
+    Content-Length: 3
     Content-Type: text/plain;charset=UTF-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
+    Vary: Accept-Encoding
+  `,
+  );
   const res2 = await fetch(url);
-  expect(res2).toMatchInlineSnapshot(`
+  expect(printHttpHeaders(res2)).toEqual(dedent`
     HTTP/1.1 200 OK
-    Connection: close
+    Content-Length: 3
     Content-Type: text/plain;charset=UTF-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
+    Vary: Accept-Encoding
   `);
+  await res.body?.cancel();
+  await res2.body?.cancel();
   await close();
 });
 
-test('response to arbitrary path', async () => {
-  const server = createNodeServer(() => ZenResponse.create('Hey'));
-  const { url, close, fetch } = await mountServer(server);
+Deno.test("response to arbitrary path", async () => {
+  const handler = createHandler(() => ZenResponse.create("Hey"));
+  const { url, close, fetch } = mountServer(handler);
 
-  const res = await fetch(`${url}${'/some/path'}`);
-  expect(res).toMatchInlineSnapshot(`
+  const res = await fetch(`${url}${"/some/path"}`);
+  expectHeaders(
+    res,
+    `
     HTTP/1.1 200 OK
-    Connection: close
+    Content-Length: 3
     Content-Type: text/plain;charset=UTF-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
-  expect(await res.text()).toBe('Hey');
+    Vary: Accept-Encoding
+  `,
+  );
+  expect(await res.text()).toBe("Hey");
   await close();
 });
 
-test('response to post method', async () => {
-  const server = createNodeServer(() => ZenResponse.create('Hey'));
-  const { url, close, fetch } = await mountServer(server);
+Deno.test("response to post method", async () => {
+  const handler = createHandler(() => ZenResponse.create("Hey"));
+  const { url, close, fetch } = mountServer(handler);
 
   const res = await fetch(url, { method: HttpMethod.POST });
-  expect(res).toMatchInlineSnapshot(`
+  expectHeaders(
+    res,
+    `
     HTTP/1.1 200 OK
-    Connection: close
+    Content-Length: 3
     Content-Type: text/plain;charset=UTF-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
-  expect(await res.text()).toBe('Hey');
+    Vary: Accept-Encoding
+  `,
+  );
+  expect(await res.text()).toBe("Hey");
   await close();
 });
 
-test('head request return 204 & empty body', async () => {
-  const server = createNodeServer(() => noContent());
-  const { url, close, fetch } = await mountServer(server);
+Deno.test("head request return 204 & empty body", async () => {
+  const handler = createHandler(() => noContent());
+  const { url, close, fetch } = mountServer(handler);
 
   const res = await fetch(url, {
     method: HttpMethod.HEAD,
   });
-  expect(res).toMatchInlineSnapshot(`
+  expectHeaders(
+    res,
+    `
     HTTP/1.1 204 No Content
-    Connection: close
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-  `);
-  expect(await res.text()).toBe('');
+  `,
+  );
+  expect(await res.text()).toBe("");
   await close();
 });
 
-test('throw HttpError return an error', async () => {
-  const server = createNodeServer(
+Deno.test("throw HttpError return an error", async () => {
+  const handler = createHandler(
     compose(HttpErrorToTextResponse(), () => {
       throw createNotFound();
     }),
   );
-  const { close, url, fetch } = await mountServer(server);
+  const { close, url, fetch } = mountServer(handler);
   const res = await fetch(url);
-  expect(res).toMatchInlineSnapshot(`
+  expectHeaders(
+    res,
+    `
     HTTP/1.1 404 Not Found
-    Connection: close
+    Content-Length: 19
     Content-Type: text/plain;charset=UTF-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
-  expect(await res.text()).toEqual('Error 404 Not Found');
+    Vary: Accept-Encoding
+  `,
+  );
+  expect(await res.text()).toEqual("Error 404 Not Found");
   await close();
 });
 
-test('throw return an error', async () => {
-  const server = createNodeServer(
-    compose(HttpErrorToTextResponse(), ErrorToHttpError(), () => {
-      throw new Error('Oops');
-    }),
+Deno.test("throw return an error", async () => {
+  const handler = createHandler(
+    compose(
+      HttpErrorToTextResponse(),
+      ErrorToHttpError({ logOnError: false }),
+      () => {
+        throw new Error("Oops");
+      },
+    ),
   );
-  const { close, url, fetch } = await mountServer(server);
+  const { close, url, fetch } = mountServer(handler);
   const res = await fetch(url);
-  expect(res).toMatchInlineSnapshot(`
+  expectHeaders(
+    res,
+    `
     HTTP/1.1 500 Internal Server Error
-    Connection: close
+    Content-Length: 14
     Content-Type: text/plain;charset=UTF-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
-  expect(await res.text()).toEqual('Error 500 Oops');
+    Vary: Accept-Encoding
+  `,
+  );
+  expect(await res.text()).toEqual("Error 500 Oops");
   await close();
 });

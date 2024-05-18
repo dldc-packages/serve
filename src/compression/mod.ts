@@ -1,3 +1,3 @@
-export * from './Compression';
-export * from './ContentEnconding';
-export * from './compress';
+export * from "./Compression.ts";
+export * from "./ContentEnconding.ts";
+export * from "./compress.ts";

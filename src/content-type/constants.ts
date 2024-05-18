@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-control-regex
 /**
  * RegExp to match *( ";" parameter ) in RFC 7231 sec 3.1.1.1
  *
@@ -38,4 +39,5 @@ export const QUOTE_REGEXP = /([\\"])/g;
  * type       = token
  * subtype    = token
  */
-export const TYPE_REGEXP = /^[!#$%&'*+.^_`|~0-9A-Za-z-]+\/[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;
+export const TYPE_REGEXP =
+  /^[!#$%&'*+.^_`|~0-9A-Za-z-]+\/[!#$%&'*+.^_`|~0-9A-Za-z-]+$/;

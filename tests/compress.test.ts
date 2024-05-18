@@ -1,160 +1,190 @@
-import { TransformStream } from 'stream/web';
-import { assert, expect, test } from 'vitest';
-import { Compression, CompressionKey, HttpHeader, ZenResponse, compose, createNodeServer, json } from '../src/mod';
-import { mountServer } from './utils/mountServer';
+import { assert } from "@std/assert";
+import { expect } from "@std/expect";
+import {
+  compose,
+  Compression,
+  createHandler,
+  HttpHeader,
+  json,
+  ZenResponse,
+} from "../mod.ts";
+import { gunzip, inflate } from "./deps.ts";
+import { expectHeaders } from "./utils/expectHeaders.ts";
+import { request } from "./utils/request.ts";
+import { streamSizeReader } from "./utils/streamSizeReader.ts";
 
-test('gzip', async () => {
-  const server = createNodeServer(compose(Compression(), () => json({ hello: 'world' })));
+/**
+ * Note: fetch() will override the Accept-Encoding header and automatically decompress the response.
+ * so to test encoding we need to send a request to teh handler directly
+ */
 
-  const { close, url, fetch } = await mountServer(server);
-  const res = await fetch(url, {
-    headers: { 'accept-encoding': 'gzip' },
-  });
-  expect(res).toMatchInlineSnapshot(`
-    HTTP/1.1 200 OK
-    Connection: close
-    Content-Encoding: gzip
-    Content-Type: application/json; charset=utf-8
-    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
-  expect(await res.text()).toBe('{"hello":"world"}');
-  await close();
+Deno.test("gzip", async () => {
+  const handler = createHandler(
+    compose(Compression(), () => json({ hello: "world" })),
+  );
+
+  const res = await handler(
+    request({ headers: { "Accept-Encoding": "gzip" } }),
+  );
+  expectHeaders(
+    res,
+    `
+      HTTP/1.1 200
+      Content-Encoding: gzip
+      Content-Type: application/json; charset=utf-8
+    `,
+  );
+
+  const bodyBuff = await res.arrayBuffer();
+  // decode gzip
+  const body = gunzip(new Uint8Array(bodyBuff));
+  const text = new TextDecoder().decode(body);
+  expect(text).toBe('{"hello":"world"}');
 });
 
-test('brotli over gzip', async () => {
-  const server = createNodeServer(compose(Compression(), () => json({ hello: 'world' })));
-  const { close, url, fetch } = await mountServer(server);
-  const res = await fetch(url, {
-    headers: { 'accept-encoding': 'gzip, br' },
-  });
-  expect(res).toMatchInlineSnapshot(`
-    HTTP/1.1 200 OK
-    Connection: close
-    Content-Encoding: br
-    Content-Type: application/json; charset=utf-8
-    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
-  expect(await res.text()).toBe('{"hello":"world"}');
-  await close();
+Deno.test("brotli over gzip", async () => {
+  const handler = createHandler(
+    compose(Compression(), () => json({ hello: "world" })),
+  );
+  const res = await handler(
+    request({ headers: { "Accept-Encoding": "br, gzip" } }),
+  );
+  expectHeaders(
+    res,
+    `
+      HTTP/1.1 200
+      Content-Encoding: br
+      Content-Type: application/json; charset=utf-8
+    `,
+  );
 });
 
-test('deflate', async () => {
-  const server = createNodeServer(compose(Compression(), () => json({ hello: 'world' })));
-  const { close, url, fetch } = await mountServer(server);
-  const res = await fetch(url, {
-    headers: { 'accept-encoding': 'deflate' },
-  });
-  expect(res).toMatchInlineSnapshot(`
-    HTTP/1.1 200 OK
-    Connection: close
+Deno.test("deflate", async () => {
+  const handler = createHandler(
+    compose(Compression(), () => json({ hello: "world" })),
+  );
+  const res = await handler(
+    request({ headers: { "Accept-Encoding": "deflate" } }),
+  );
+
+  expectHeaders(
+    res,
+    `
+    HTTP/1.1 200
     Content-Encoding: deflate
     Content-Type: application/json; charset=utf-8
-    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
-  expect(await res.text()).toBe('{"hello":"world"}');
-  await close();
+  `,
+  );
+  const bodyBuff = await res.arrayBuffer();
+  const body = inflate(new Uint8Array(bodyBuff));
+  const text = new TextDecoder().decode(body);
+  expect(text).toBe('{"hello":"world"}');
 });
 
-test('compress with asyncIterable body', async () => {
-  const server = createNodeServer(
-    compose(Compression(), (ctx) => {
-      const compression = ctx.get(CompressionKey.Consumer);
-      const body = new TransformStream<Uint8Array | 'flush', Uint8Array>({
-        transform(chunk, controller) {
-          if (typeof chunk === 'string') {
-            compression?.flush();
-            return;
-          }
-          controller.enqueue(chunk);
-        },
-      });
+Deno.test("asyncIterable body", async () => {
+  const handler = createHandler(
+    compose(() => {
+      const body = new TransformStream<Uint8Array, Uint8Array>({});
       async function sendData() {
         const writer = body.writable.getWriter();
         await writer.write(Uint8Array.from([1, 2, 3]));
         await writer.write(Uint8Array.from([4, 5, 6]));
-        await writer.write('flush');
         await new Promise((resolve) => setTimeout(resolve, 100));
         await writer.write(Uint8Array.from([7, 8, 9]));
         await writer.close();
       }
-      sendData().catch((err) => {
-        console.log(err);
-      });
+      sendData().catch(() => {});
       return ZenResponse.create(body.readable, {
         headers: {
-          [HttpHeader.Connection]: 'keep-alive',
-          'content-type': 'application/octet-stream',
+          [HttpHeader.Connection]: "keep-alive",
+          [HttpHeader.ContentType]: "application/octet-stream",
         },
       });
     }),
   );
-  const { close, url, fetch } = await mountServer(server);
 
-  const res = await fetch(url, {
-    headers: { 'accept-encoding': 'deflate' },
-  });
+  const res = await handler(
+    request({ headers: { [HttpHeader.AcceptEncoding]: "deflate" } }),
+  );
   assert(res.body);
-  const reader = res.body.getReader();
-  const message = await reader.read();
-  expect(message).toEqual({
-    done: false,
-    value: new Uint8Array([1, 2, 3, 4, 5, 6]),
-  });
-  const message2 = await reader.read();
-  expect(message2).toEqual({
-    done: false,
-    value: new Uint8Array([7, 8, 9]),
-  });
-
-  await close();
+  const reader = streamSizeReader(res.body);
+  const result1 = await reader.read(6);
+  expect(result1).toEqual(new Uint8Array([1, 2, 3, 4, 5, 6]));
+  const result2 = await reader.read(3);
+  expect(result2).toEqual(new Uint8Array([7, 8, 9]));
 });
 
-test('compress with asyncIterable body aborted', async () => {
-  const server = createNodeServer(
-    compose(Compression(), (ctx) => {
-      const compression = ctx.get(CompressionKey.Consumer);
-      const body = new TransformStream<Uint8Array | 'flush', Uint8Array>({
-        transform(chunk, controller) {
-          if (typeof chunk === 'string') {
-            compression?.flush();
-            return;
-          }
-          controller.enqueue(chunk);
-        },
-      });
+Deno.test("compress with asyncIterable body", async () => {
+  const handler = createHandler(
+    compose(Compression(), () => {
+      const body = new TransformStream<Uint8Array, Uint8Array>({});
       async function sendData() {
         const writer = body.writable.getWriter();
         await writer.write(Uint8Array.from([1, 2, 3]));
         await writer.write(Uint8Array.from([4, 5, 6]));
-        await writer.write('flush');
         await new Promise((resolve) => setTimeout(resolve, 100));
         await writer.write(Uint8Array.from([7, 8, 9]));
       }
-      sendData().catch((err) => {
-        console.log(err);
-      });
+      sendData().catch(() => {});
       return ZenResponse.create(body.readable, {
         headers: {
-          [HttpHeader.Connection]: 'keep-alive',
-          'content-type': 'application/octet-stream',
+          [HttpHeader.Connection]: "keep-alive",
+          [HttpHeader.ContentType]: "application/octet-stream",
         },
       });
     }),
   );
-  const { close, url, fetch } = await mountServer(server);
+
+  const res = await handler(
+    request({ headers: { [HttpHeader.AcceptEncoding]: "deflate" } }),
+  );
+  assert(res.body);
+  const decompressor = new DecompressionStream("deflate");
+  const readable = res.body.pipeThrough(decompressor);
+  const reader = streamSizeReader(readable);
+  const result1 = await reader.read(6);
+  expect(result1).toEqual(new Uint8Array([1, 2, 3, 4, 5, 6]));
+  const result2 = await reader.read(3);
+  expect(result2).toEqual(new Uint8Array([7, 8, 9]));
+  reader.close();
+});
+
+Deno.test("compress with asyncIterable body aborted", async () => {
+  const handler = createHandler(
+    compose(Compression(), () => {
+      const body = new TransformStream<Uint8Array, Uint8Array>({});
+      async function sendData() {
+        const writer = body.writable.getWriter();
+        await writer.write(Uint8Array.from([1, 2, 3]));
+        await writer.write(Uint8Array.from([4, 5, 6]));
+        await writer.write(Uint8Array.from([7, 8, 9]));
+        await writer.close();
+      }
+      sendData().catch(() => {});
+      return ZenResponse.create(body.readable, {
+        headers: {
+          [HttpHeader.Connection]: "keep-alive",
+          [HttpHeader.ContentType]: "application/octet-stream",
+        },
+      });
+    }),
+  );
 
   const controller = new AbortController();
-  const res = await fetch(url, { headers: { 'accept-encoding': 'deflate' }, signal: controller.signal });
+  const res = await handler(
+    request({
+      headers: { [HttpHeader.AcceptEncoding]: "deflate" },
+      signal: controller.signal,
+    }),
+  );
+
   assert(res.body);
-  const reader = res.body.getReader();
-  const message = await reader.read();
-  expect(message).toEqual({
-    done: false,
-    value: new Uint8Array([1, 2, 3, 4, 5, 6]),
-  });
+  const decompressor = new DecompressionStream("deflate");
+  const readable = res.body.pipeThrough(decompressor);
+  const reader = streamSizeReader(readable);
+
+  const result = await reader.read(6);
+  expect(result).toEqual(new Uint8Array([1, 2, 3, 4, 5, 6]));
   controller.abort();
-  await close();
+  reader.close();
 });

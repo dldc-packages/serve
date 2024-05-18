@@ -1,26 +1,40 @@
-import { restore } from '@dldc/zenjson';
-import { expect, test } from 'vitest';
-import { ErrorToHttpError, HttpErrorToZenjsonResponse, compose, createNodeServer, zenjson } from '../src/mod';
-import { mountServer } from './utils/mountServer';
+import { restore } from "@dldc/zenjson";
+import { expect } from "@std/expect";
+import {
+  compose,
+  createHandler,
+  ErrorToHttpError,
+  HttpErrorToZenjsonResponse,
+  zenjson,
+} from "../mod.ts";
+import { expectHeaders } from "./utils/expectHeaders.ts";
+import { mountServer } from "./utils/mountServer.ts";
 
-test('Send zenjson response', async () => {
+Deno.test("Send zenjson response", async () => {
   const date = new Date();
-  const server = createNodeServer(
-    compose(HttpErrorToZenjsonResponse(), ErrorToHttpError(), () => {
-      return zenjson({ date: date, infinity: Infinity, null: null });
-    }),
+  const handler = createHandler(
+    compose(
+      HttpErrorToZenjsonResponse({ logOnError: false }),
+      ErrorToHttpError({ logOnError: false }),
+      () => {
+        return zenjson({ date: date, infinity: Infinity, null: null });
+      },
+    ),
   );
 
-  const { close, url, fetch } = await mountServer(server);
+  const { close, url, fetch } = mountServer(handler);
 
   const res = await fetch(url);
-  expect(res).toMatchInlineSnapshot(`
-    HTTP/1.1 200 OK
-    Connection: close
-    Content-Type: application/json; charset=utf-8
-    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
+  expectHeaders(
+    res,
+    `
+      HTTP/1.1 200 OK
+      Content-Length: 89
+      Content-Type: application/json; charset=utf-8
+      Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+      Vary: Accept-Encoding
+    `,
+  );
   const result = restore(await res.json());
   expect(result).toEqual({
     date: date,

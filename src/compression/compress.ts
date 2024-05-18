@@ -1,10 +1,5 @@
-import { Transform } from 'node:stream';
-import zlib from 'node:zlib';
-import type { ReadableStream } from 'stream/web';
-import { Headers, Response } from 'undici';
-import { HttpHeader, HttpStatus, ZenResponse } from '../core/mod';
-import type { TFlush } from './Compression';
-import { ContentEncoding } from './ContentEnconding';
+import { HttpHeader, HttpStatus, ZenResponse } from "../core/mod.ts";
+import { ContentEncoding } from "./ContentEnconding.ts";
 
 /**
  * Compresses the response body with the given encodings.
@@ -12,13 +7,19 @@ import { ContentEncoding } from './ContentEnconding';
 export function compress(
   originalResponse: ZenResponse,
   encoding: ContentEncoding,
-  setFlush: (f: TFlush) => void,
 ): ZenResponse {
-  if (originalResponse.body === null || HttpStatus.isEmpty(originalResponse.status ?? 200)) {
+  if (
+    originalResponse.body === null ||
+    HttpStatus.isEmpty(originalResponse.status ?? 200)
+  ) {
     return originalResponse;
   }
   const bodyStream = new Response(originalResponse.body).body;
-  const body = encodeBodyWithEncoding(bodyStream, encoding, setFlush);
+  const body = encodeBodyWithEncoding(bodyStream, encoding);
+
+  if (body === null) {
+    return originalResponse;
+  }
 
   return originalResponse
     .withHeaders((prev) => {
@@ -35,25 +36,21 @@ export function compress(
 function encodeBodyWithEncoding(
   body: ReadableStream | null,
   encoding: ContentEncoding,
-  setFlush: (f: TFlush) => void,
-): ReadableStream | null {
+): ReadableStream<Uint8Array> | null {
   if (body === null) {
     return null;
   }
-  if (encoding === ContentEncoding.Brotli) {
-    const enc = zlib.createBrotliCompress();
-    setFlush(() => enc.flush());
-    return body.pipeThrough(Transform.toWeb(enc));
-  }
+  // if (encoding === ContentEncoding.Brotli) {
+  //   const encoder = new CompressionStream("gzip")
+  //   return body.pipeThrough(encoder);
+  // }
   if (encoding === ContentEncoding.Gzip) {
-    const enc = zlib.createGzip();
-    setFlush(() => enc.flush());
-    return body.pipeThrough(Transform.toWeb(enc));
+    const encoder = new CompressionStream("gzip");
+    return body.pipeThrough(encoder);
   }
   if (encoding === ContentEncoding.Deflate) {
-    const enc = zlib.createDeflate();
-    setFlush(() => enc.flush());
-    return body.pipeThrough(Transform.toWeb(enc));
+    const encoder = new CompressionStream("deflate");
+    return body.pipeThrough(encoder);
   }
   return body;
 }

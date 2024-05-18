@@ -1,11 +1,11 @@
 const ALL_METHODS = {
-  GET: 'GET',
-  HEAD: 'HEAD',
-  PATCH: 'PATCH',
-  OPTIONS: 'OPTIONS',
-  DELETE: 'DELETE',
-  POST: 'POST',
-  PUT: 'PUT',
+  GET: "GET",
+  HEAD: "HEAD",
+  PATCH: "PATCH",
+  OPTIONS: "OPTIONS",
+  DELETE: "DELETE",
+  POST: "POST",
+  PUT: "PUT",
 } as const;
 
 export type HttpMethod = (typeof ALL_METHODS)[keyof typeof ALL_METHODS];

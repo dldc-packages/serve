@@ -1,10 +1,12 @@
-import type { Middleware, ZenResult } from '../core/mod';
-import { compose, HttpMethod, Key } from '../core/mod';
-import type { Routes } from './Route';
-import { Route } from './Route';
-import { withAllowedMethods } from './withAllowedMethods';
+import type { Middleware, ZenResult } from "../core/mod.ts";
+import { compose, createKey, HttpMethod } from "../core/mod.ts";
+import type { Routes } from "./Route.ts";
+import { Route } from "./Route.ts";
+import { withAllowedMethods } from "./withAllowedMethods.ts";
 
-export const RouterAllowedMethodsKey = Key.create<Set<HttpMethod>>('RouterAllowedMethods');
+export const RouterAllowedMethodsKey = createKey<Set<HttpMethod>>(
+  "RouterAllowedMethods",
+);
 export const RouterAllowedMethodsConsumer = RouterAllowedMethodsKey.Consumer;
 
 export function AllowedMethodsRoutes(routes: Routes): Routes {
@@ -30,16 +32,24 @@ export function AllowedMethodsRoutes(routes: Routes): Routes {
       if (methods.size === 1) {
         return;
       }
-      const optionsRoute = routes.find((route) => route.method === HttpMethod.OPTIONS);
+      const optionsRoute = routes.find((route) =>
+        route.method === HttpMethod.OPTIONS
+      );
       if (optionsRoute) {
         const newRoute: Route = {
           ...optionsRoute,
-          middleware: compose(AllowedMethodsMiddleware(methods), optionsRoute.middleware),
+          middleware: compose(
+            AllowedMethodsMiddleware(methods),
+            optionsRoute.middleware,
+          ),
         };
         updatedRoutes.set(optionsRoute, newRoute);
       } else {
         result.push(
-          Route.create({ pattern, exact: true, method: HttpMethod.OPTIONS }, AllowedMethodsMiddleware(methods)),
+          Route.create(
+            { pattern, exact: true, method: HttpMethod.OPTIONS },
+            AllowedMethodsMiddleware(methods),
+          ),
         );
       }
     }
@@ -57,7 +67,9 @@ export function AllowedMethodsRoutes(routes: Routes): Routes {
 
 function AllowedMethodsMiddleware(methods: Set<HttpMethod>): Middleware {
   return async (ctx, next): Promise<ZenResult> => {
-    const response = await next(ctx.with(RouterAllowedMethodsKey.Provider(methods)));
+    const response = await next(
+      ctx.with(RouterAllowedMethodsKey.Provider(methods)),
+    );
     return withAllowedMethods(response, methods);
   };
 }

@@ -1,11 +1,19 @@
-import type { MimeType } from './MimeType';
-import { PARAM_REGEXP, QESC_REGEXP, QUOTE_REGEXP, TEXT_REGEXP, TOKEN_REGEXP, TYPE_REGEXP } from './constants';
+import type { MimeType } from "./MimeType.ts";
+import {
+  PARAM_REGEXP,
+  QESC_REGEXP,
+  QUOTE_REGEXP,
+  TEXT_REGEXP,
+  TOKEN_REGEXP,
+  TYPE_REGEXP,
+} from "./constants.ts";
 
 export const ContentTypeCharset = {
-  Utf8: 'utf-8',
+  Utf8: "utf-8",
 } as const;
 
-export type ContentTypeCharset = (typeof ContentTypeCharset)[keyof typeof ContentTypeCharset];
+export type ContentTypeCharset =
+  (typeof ContentTypeCharset)[keyof typeof ContentTypeCharset];
 
 export interface ContentTypeObject {
   type: string;
@@ -26,13 +34,13 @@ function format(type: MimeType, parameters?: ContentTypeParameters): string;
 function format(type: string, parameters?: ContentTypeParameters): string;
 function format(type: string, parameters?: ContentTypeParameters): string {
   if (!type || !TYPE_REGEXP.test(type)) {
-    throw new TypeError('invalid type');
+    throw new TypeError("invalid type");
   }
 
   let string = type;
 
   // append parameters
-  if (parameters && typeof parameters === 'object') {
+  if (parameters && typeof parameters === "object") {
     Object.entries(parameters)
       .sort()
       .forEach(([param, value]) => {
@@ -40,9 +48,9 @@ function format(type: string, parameters?: ContentTypeParameters): string {
           return;
         }
         if (!TOKEN_REGEXP.test(param)) {
-          throw new TypeError('invalid parameter name');
+          throw new TypeError("invalid parameter name");
         }
-        string += '; ' + param + '=' + qstring(value);
+        string += "; " + param + "=" + qstring(value);
       });
   }
 
@@ -50,11 +58,11 @@ function format(type: string, parameters?: ContentTypeParameters): string {
 }
 
 function parse(string: string): ContentTypeObject {
-  let index = string.indexOf(';');
+  let index = string.indexOf(";");
   const type = index !== -1 ? string.substr(0, index).trim() : string.trim();
 
   if (!TYPE_REGEXP.test(type)) {
-    throw new TypeError('invalid media type');
+    throw new TypeError("invalid media type");
   }
 
   const parameters: ContentTypeParameters = {};
@@ -69,7 +77,7 @@ function parse(string: string): ContentTypeObject {
 
     while ((match = PARAM_REGEXP.exec(string))) {
       if (match.index !== index) {
-        throw new TypeError('invalid parameter format');
+        throw new TypeError("invalid parameter format");
       }
 
       index += match[0].length;
@@ -78,14 +86,14 @@ function parse(string: string): ContentTypeObject {
 
       if (value[0] === '"') {
         // remove quotes and escapes
-        value = value.substr(1, value.length - 2).replace(QESC_REGEXP, '$1');
+        value = value.substr(1, value.length - 2).replace(QESC_REGEXP, "$1");
       }
 
       parameters[key] = value;
     }
 
     if (index !== string.length) {
-      throw new TypeError('invalid parameter format');
+      throw new TypeError("invalid parameter format");
     }
   }
 
@@ -109,8 +117,8 @@ function qstring(val: string): string {
   }
 
   if (str.length > 0 && !TEXT_REGEXP.test(str)) {
-    throw new TypeError('invalid parameter value');
+    throw new TypeError("invalid parameter value");
   }
 
-  return '"' + str.replace(QUOTE_REGEXP, '\\$1') + '"';
+  return '"' + str.replace(QUOTE_REGEXP, "\\$1") + '"';
 }

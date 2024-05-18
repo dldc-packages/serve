@@ -1,8 +1,6 @@
-import type { Request, Response } from 'undici';
-import { errors } from 'undici';
-import { ZenContext } from './ZenContext';
-import { ZenResponse } from './ZenResponse';
-import type { Middleware } from './compose';
+import { ZenContext } from "./ZenContext.ts";
+import { ZenResponse } from "./ZenResponse.ts";
+import type { Middleware } from "./compose.ts";
 
 export interface CreateHandlerOptions {
   base?: string;
@@ -15,9 +13,10 @@ export function createHandler(middleware: Middleware): Handler {
     try {
       const zenContext = ZenContext.fromRequest(request);
       const zenResponse = await middleware(zenContext, () => {
-        throw new errors.UndiciError('Server did not respond');
+        throw new Error("Server did not respond");
       });
-      return ZenResponse.toResponse(zenResponse);
+      const res = ZenResponse.toResponse(zenResponse);
+      return res;
     } catch (error) {
       // Handled error (throwing a response)
       if (error instanceof ZenResponse) {

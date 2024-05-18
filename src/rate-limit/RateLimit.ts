@@ -1,5 +1,5 @@
-import { createTooManyRequests } from '../mod';
-import type { LimitStrategy } from './LimitStrategy';
+import { createTooManyRequests } from "../core/mod.ts";
+import type { LimitStrategy } from "./LimitStrategy.ts";
 
 export interface GlobalRateLimit<S> {
   hit: () => S;
@@ -40,10 +40,15 @@ function create<K, S>(options: RateLimitOptions<K, S>): RateLimit<K, S> {
     hit: (key) => {
       const now = Date.now();
       let prevState: StoreState<S> | undefined = store.get(key);
-      if (prevState && prevState.expireAt !== null && prevState.expireAt < now) {
+      if (
+        prevState && prevState.expireAt !== null && prevState.expireAt < now
+      ) {
         prevState = undefined;
       }
-      const { next: nextState, allowed, expireAt } = strategy(prevState ? prevState.state : undefined, now);
+      const { next: nextState, allowed, expireAt } = strategy(
+        prevState ? prevState.state : undefined,
+        now,
+      );
       store.set(key, { state: nextState, expireAt });
       if (store.size >= storeCleanupSize) {
         const keysToDelete: Array<K> = [];
@@ -65,10 +70,14 @@ function create<K, S>(options: RateLimitOptions<K, S>): RateLimit<K, S> {
   };
 }
 
-function createGlobal<S>(options: GlobalRateLimitOptions<S>): GlobalRateLimit<S> {
+function createGlobal<S>(
+  options: GlobalRateLimitOptions<S>,
+): GlobalRateLimit<S> {
   const { errorMessage, storeCleanupSize, strategy } = options;
   const limiter = create<null, S>({
-    errorMessage: errorMessage ? (_key, state) => errorMessage(state) : undefined,
+    errorMessage: errorMessage
+      ? (_key, state) => errorMessage(state)
+      : undefined,
     storeCleanupSize,
     strategy,
   });
@@ -77,7 +86,9 @@ function createGlobal<S>(options: GlobalRateLimitOptions<S>): GlobalRateLimit<S>
   };
 }
 
-function createByIp<S>(options: RateLimitOptions<string, S>): RateLimit<string, S> {
+function createByIp<S>(
+  options: RateLimitOptions<string, S>,
+): RateLimit<string, S> {
   const { errorMessage, storeCleanupSize, strategy } = options;
   return create({
     errorMessage: errorMessage || ((ip) => `too many request from ${ip}`),

@@ -1,5 +1,4 @@
-import type { Server } from 'node:http';
-import { Agent, fetch } from 'undici';
+import { getAvailablePortSync } from "../deps.ts";
 
 interface MountedServer {
   url: string;
@@ -8,36 +7,31 @@ interface MountedServer {
   fetch: typeof fetch;
 }
 
-export async function mountServer(server: Server): Promise<MountedServer> {
-  return new Promise((resolve) => {
-    server.listen(undefined, () => {
-      const address = server.address();
-      if (address === null || typeof address === 'string') {
-        throw new Error('Whut ?');
-      }
-      // Force close the connection after each request
-      const dispatcher = new Agent({ pipelining: 0 });
-      resolve({
-        url: `http://localhost:${address.port}`,
-        port: address.port,
-        close: () => {
-          return new Promise((resolve) => {
-            server.close(() => {
-              resolve();
-            });
-          });
-        },
-        fetch(input, init) {
-          return fetch(input, {
-            ...init,
-            dispatcher,
-            headers: {
-              ...init?.headers,
-              host: `http://localhost:${address.port}`,
-            },
-          });
+export function mountServer(handler: Deno.ServeHandler): MountedServer {
+  const port = getAvailablePortSync();
+  if (!port) {
+    throw new Error("No available port");
+  }
+  const server = Deno.serve({
+    port,
+    onListen: () => {},
+  }, handler);
+  const url = `http://localhost:${port}`;
+  return {
+    port,
+    url,
+    close() {
+      return server.shutdown();
+    },
+    fetch(input, init) {
+      return fetch(input, {
+        ...init,
+        headers: {
+          "Accept-Encoding": "identity",
+          ...init?.headers,
+          host: url,
         },
       });
-    });
-  });
+    },
+  };
 }

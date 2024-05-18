@@ -1,9 +1,9 @@
-import type { IChemin } from '@dldc/chemin';
-import { chemin, equal as cheminEqual, splitPathname } from '@dldc/chemin';
-import type { Middleware } from '../core/mod';
-import { HttpMethod, compose } from '../core/mod';
+import type { IChemin } from "@dldc/chemin";
+import { chemin, equal as cheminEqual, splitPathname } from "@dldc/chemin";
+import type { Middleware } from "../core/mod.ts";
+import { compose, HttpMethod } from "../core/mod.ts";
 
-export const ROUTE_TOKEN = Symbol.for('__TUMAU_ROUTE_TOKEN__');
+export const ROUTE_TOKEN = Symbol.for("__TUMAU_ROUTE_TOKEN__");
 
 export interface Route {
   [ROUTE_TOKEN]: true;
@@ -37,15 +37,24 @@ export const Route = {
     return routes.map(
       (route): Route => ({
         ...route,
-        pattern: route.pattern === null ? chemin(pattern) : chemin(pattern, route.pattern),
+        pattern: route.pattern === null
+          ? chemin(pattern)
+          : chemin(pattern, route.pattern),
       }),
     );
   },
-  group: (middlewares: Middleware | Array<Middleware>, routes: Routes): Routes => {
+  group: (
+    middlewares: Middleware | Array<Middleware>,
+    routes: Routes,
+  ): Routes => {
     const middleware = resolveMiddleware(middlewares);
-    return routes.map((route): Route => ({ ...route, middleware: compose(middleware, route.middleware) }));
+    return routes.map((route): Route => ({
+      ...route,
+      middleware: compose(middleware, route.middleware),
+    }));
   },
-  fallback: (...middlewares: Array<Middleware>): Route => createRoute({ exact: false, isFallback: true }, middlewares),
+  fallback: (...middlewares: Array<Middleware>): Route =>
+    createRoute({ exact: false, isFallback: true }, middlewares),
 };
 
 function createRoute(
@@ -72,7 +81,9 @@ function createRoute(
   };
 }
 
-function resolveMiddleware(middleware: Middleware | Array<Middleware>): Middleware {
+function resolveMiddleware(
+  middleware: Middleware | Array<Middleware>,
+): Middleware {
   if (Array.isArray(middleware)) {
     return compose(...middleware);
   }
@@ -86,7 +97,11 @@ export interface FindResult {
 }
 
 // fins all routes matching the pattern (ignoring methods & upgrade)
-function find(routes: Array<Route>, pathname: string, method: HttpMethod | null): Array<FindResult> {
+function find(
+  routes: Array<Route>,
+  pathname: string,
+  method: HttpMethod | null,
+): Array<FindResult> {
   const parts = splitPathname(pathname);
   return routes
     .map((route, index): FindResult | false => {
@@ -104,7 +119,8 @@ function find(routes: Array<Route>, pathname: string, method: HttpMethod | null)
       if (route.exact && pathMatch.rest.length > 0) {
         return false;
       }
-      const methodIsMatching = method === null || route.method === null || route.method === method;
+      const methodIsMatching = method === null || route.method === null ||
+        route.method === method;
       if (methodIsMatching === false) {
         return false;
       }
@@ -128,10 +144,11 @@ function groupByPattern(routes: Array<Route>): Array<GroupResult> {
   const result: Array<GroupResult> = [];
   routes.forEach((route) => {
     const pattern = route.pattern;
-    const exist =
-      pattern === null
-        ? result.find((item) => item.pattern === null)
-        : result.find((item) => item.pattern !== null && cheminEqual(item.pattern, pattern));
+    const exist = pattern === null
+      ? result.find((item) => item.pattern === null)
+      : result.find((item) =>
+        item.pattern !== null && cheminEqual(item.pattern, pattern)
+      );
     if (exist) {
       exist.routes.push(route);
     } else {

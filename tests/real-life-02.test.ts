@@ -1,40 +1,38 @@
-import { expect, test } from 'vitest';
 import {
   AllowedMethodsRoutes,
-  Compression,
+  chemin,
+  compose,
   CookieManager,
   CookieParser,
   CorsActual,
   CorsPreflight,
+  createHandler,
+  createNotFound,
   ErrorToHttpError,
   HttpErrorToJsonResponse,
   InvalidResponseToHttpError,
+  json,
   JsonParser,
   Route,
   Router,
-  chemin,
-  compose,
-  createNodeServer,
-  createNotFound,
-  json,
-} from '../src/mod';
-import { mountServer } from './utils/mountServer';
+} from "../mod.ts";
+import { expectHeaders } from "./utils/expectHeaders.ts";
+import { mountServer } from "./utils/mountServer.ts";
 
-test('real life 2', async () => {
-  const app = createNodeServer(
+Deno.test("real life 2", async () => {
+  const app = createHandler(
     compose(
       CorsActual(),
       CorsPreflight(),
-      Compression(),
-      HttpErrorToJsonResponse(),
-      InvalidResponseToHttpError(),
-      ErrorToHttpError(),
+      HttpErrorToJsonResponse({ logOnError: false }),
+      InvalidResponseToHttpError({ logOnError: false }),
+      ErrorToHttpError({ logOnError: false }),
       JsonParser(),
       CookieParser(),
       CookieManager(),
       Router(
         AllowedMethodsRoutes([
-          Route.POST(chemin('login'), () => {
+          Route.POST(chemin("login"), () => {
             return json({ success: true });
           }),
           Route.fallback(() => {
@@ -45,51 +43,63 @@ test('real life 2', async () => {
     ),
   );
 
-  const { url, close, fetch } = await mountServer(app);
+  const { url, close, fetch } = mountServer(app);
 
   const res = await fetch(url);
-  expect(res).toMatchInlineSnapshot(`
-    HTTP/1.1 404 Not Found
-    Connection: close
-    Content-Encoding: gzip
-    Content-Type: application/json; charset=utf-8
-    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
+  expectHeaders(
+    res,
+    `
+      HTTP/1.1 404 Not Found
+      Content-Length: 52
+      Content-Type: application/json; charset=utf-8
+      Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+      Vary: Accept-Encoding
+    `,
+  );
+  res.body?.cancel();
 
   const res2 = await fetch(`${url}/login`);
-  expect(res2).toMatchInlineSnapshot(`
-    HTTP/1.1 404 Not Found
-    Connection: close
-    Content-Encoding: gzip
-    Content-Type: application/json; charset=utf-8
-    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
+  expectHeaders(
+    res2,
+    `
+      HTTP/1.1 404 Not Found
+      Content-Length: 52
+      Content-Type: application/json; charset=utf-8
+      Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+      Vary: Accept-Encoding
+    `,
+  );
+  res2.body?.cancel();
 
-  const res3 = await fetch(`${url}/login`, { method: 'post' });
-  expect(res3).toMatchInlineSnapshot(`
-    HTTP/1.1 200 OK
-    Connection: close
-    Content-Encoding: gzip
-    Content-Type: application/json; charset=utf-8
-    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
+  const res3 = await fetch(`${url}/login`, { method: "post" });
+  expectHeaders(
+    res3,
+    `
+      HTTP/1.1 200 OK
+      Content-Length: 16
+      Content-Type: application/json; charset=utf-8
+      Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+      Vary: Accept-Encoding
+    `,
+  );
+  res3.body?.cancel();
 
   const res4 = await fetch(`${url}/login`, {
-    method: 'post',
-    headers: { origin: 'localhost:3000' },
+    method: "post",
+    headers: { origin: "localhost:3000" },
   });
-  expect(res4).toMatchInlineSnapshot(`
-    HTTP/1.1 200 OK
-    Access-Control-Allow-Origin: localhost:3000
-    Connection: close
-    Content-Encoding: gzip
-    Content-Type: application/json; charset=utf-8
-    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
-    Transfer-Encoding: chunked
-  `);
+  expectHeaders(
+    res4,
+    `
+      HTTP/1.1 200 OK
+      Access-Control-Allow-Origin: localhost:3000
+      Content-Length: 16
+      Content-Type: application/json; charset=utf-8
+      Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+      Vary: Accept-Encoding
+    `,
+  );
+  res4.body?.cancel();
 
   await close();
 });
