@@ -1,6 +1,6 @@
 {
   "name": "@dldc/serve",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "exports": "./mod.ts",
   "imports": {
     "@dldc/chemin": "jsr:@dldc/chemin@^12.0.0",
@@ -20,6 +20,10 @@
     "check": "deno fmt --check . && deno lint . && deno task test"
   },
   "lint": {
-    "rules": { "exclude": ["no-explicit-any"] }
+    "rules": {
+      "exclude": [
+        "no-explicit-any"
+      ]
+    }
   }
 }
