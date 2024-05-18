@@ -1,11 +1,13 @@
-import type { TStackCoreValue } from "@dldc/stack";
+import type { TKey, TStackCoreValue } from "@dldc/stack";
 import { createKey, Stack } from "@dldc/stack";
 
-const BodyKey = createKey<BodyInit>("Body");
-const HeadersKey = createKey<Headers>("Headers");
-const StatusKey = createKey<number>("Status");
-const StatusTextKey = createKey<string>("StatusText");
-const RedirectKey = createKey<{ url: string; status: number }>("Redirect");
+const BodyKey: TKey<BodyInit> = createKey<BodyInit>("Body");
+const HeadersKey: TKey<Headers> = createKey<Headers>("Headers");
+const StatusKey: TKey<number> = createKey<number>("Status");
+const StatusTextKey: TKey<string> = createKey<string>("StatusText");
+const RedirectKey: TKey<{ url: string; status: number }> = createKey<
+  { url: string; status: number }
+>("Redirect");
 
 export class ZenResponse extends Stack {
   static create(body?: BodyInit | null, init?: ResponseInit): ZenResponse {

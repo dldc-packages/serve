@@ -1,10 +1,12 @@
 import { getCookies } from "@std/http";
-import type { Middleware, ZenResult } from "../core/mod.ts";
+import type { Middleware, TKey, ZenResult } from "../core/mod.ts";
 import { createKey } from "../core/mod.ts";
 
 export type Cookies = Record<string, string>;
 
-export const CookieParserKey = createKey<Cookies>("CookieParser");
+export const CookieParserKey: TKey<Cookies> = createKey<Cookies>(
+  "CookieParser",
+);
 export const CookieParserConsumer = CookieParserKey.Consumer;
 
 export function CookieParser(): Middleware {

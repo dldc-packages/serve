@@ -1,8 +1,8 @@
-import type { TKeyProvider, TStackCoreValue } from "@dldc/stack";
+import type { TKey, TKeyProvider, TStackCoreValue } from "@dldc/stack";
 import { createKey, Stack } from "@dldc/stack";
 import type { HttpMethod } from "./HttpMethod.ts";
 
-const RequestKey = createKey<Request>("Request");
+const RequestKey: TKey<Request> = createKey<Request>("Request");
 
 export class ZenContext extends Stack {
   static fromRequest(request: Request): ZenContext {

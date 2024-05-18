@@ -1,4 +1,4 @@
-import { createKeyWithDefault } from "../core/mod.ts";
+import { createKeyWithDefault, type TKey } from "../core/mod.ts";
 
 export type Logger = {
   log(...data: Array<any>): void;
@@ -7,11 +7,14 @@ export type Logger = {
   warn(...data: Array<any>): void;
 };
 
-export const LoggerContext = createKeyWithDefault<Logger>("Logger", {
-  error: console.error,
-  info: console.info,
-  log: console.log,
-  warn: console.warn,
-});
+export const LoggerContext: TKey<Logger, true> = createKeyWithDefault<Logger>(
+  "Logger",
+  {
+    error: console.error,
+    info: console.info,
+    log: console.log,
+    warn: console.warn,
+  },
+);
 
 export const LoggerConsumer = LoggerContext.Consumer;

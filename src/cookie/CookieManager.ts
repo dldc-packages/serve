@@ -1,5 +1,5 @@
 import { type Cookie, deleteCookie, getSetCookies, setCookie } from "@std/http";
-import type { Middleware, ZenResult } from "../core/mod.ts";
+import type { Middleware, TKey, ZenResult } from "../core/mod.ts";
 import { createKey } from "../core/mod.ts";
 import { withSetCookies } from "./withSetCookies.ts";
 
@@ -12,7 +12,9 @@ export interface CookieManager {
   delete(name: string, attributes?: { name?: string; domain?: string }): void;
 }
 
-export const CookieManagerKey = createKey<CookieManager>("CookieManager");
+export const CookieManagerKey: TKey<CookieManager> = createKey<CookieManager>(
+  "CookieManager",
+);
 export const CookieManagerConsumer = CookieManagerKey.Consumer;
 
 export function CookieManager(): Middleware {

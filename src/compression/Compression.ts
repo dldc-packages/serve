@@ -1,4 +1,4 @@
-import type { Middleware } from "../core/mod.ts";
+import type { Middleware, TKey } from "../core/mod.ts";
 import { createKey, HttpHeader } from "../core/mod.ts";
 import { ContentEncoding } from "./ContentEnconding.ts";
 import { compress } from "./compress.ts";
@@ -8,7 +8,9 @@ export interface ICompression {
   readonly usedEncoding: null | ContentEncoding;
 }
 
-export const CompressionKey = createKey<ICompression>("Compress");
+export const CompressionKey: TKey<ICompression> = createKey<ICompression>(
+  "Compress",
+);
 export const CompressConsumer = CompressionKey.Consumer;
 
 /**

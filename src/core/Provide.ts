@@ -2,10 +2,15 @@ import { createKey } from "@dldc/stack";
 import type { ZenContext } from "./ZenContext.ts";
 import type { Middleware } from "./compose.ts";
 
+export interface TProvide<Result> {
+  Middleware: Middleware;
+  getOrFail: (ctx: ZenContext) => Result;
+}
+
 export function Provide<Result>(
   name: string,
   validate: (ctx: ZenContext) => Promise<Result>,
-) {
+): TProvide<Result> {
   const CtxKey = createKey<Result>(name);
 
   const Middleware: Middleware = async (ctx, next) => {

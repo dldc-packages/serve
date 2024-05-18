@@ -1,4 +1,4 @@
-import { createErreurStore } from "@dldc/erreur";
+import { createErreurStore, type TErreurStore } from "@dldc/erreur";
 import type {
   HttpStatusCode,
   HttpStatusMessage,
@@ -12,14 +12,16 @@ export interface IHttpErreurData {
   message: HttpStatusMessage;
 }
 
-const HttpErreurInternal = createErreurStore<IHttpErreurData>();
+const HttpErreurInternal: TErreurStore<IHttpErreurData> = createErreurStore<
+  IHttpErreurData
+>();
 
 export const HttpErreur = HttpErreurInternal.asReadonly;
 
 export function createHttpErreur(
   codeOrName: HttpStatusCode | HttpStatusName = 500,
   messageOrCause?: HttpStatusMessage | Error,
-) {
+): Error {
   const code: HttpStatusCode = typeof codeOrName === "number"
     ? codeOrName
     : HttpStatus.fromName(codeOrName).code;
@@ -52,11 +54,12 @@ export type THttpErreurDetailsData =
   | { type: "ServerDidNotRespond" }
   | { type: "TooManyRequests"; reason?: string };
 
-const HttpErreurDetailsInternal = createErreurStore<THttpErreurDetailsData>();
+const HttpErreurDetailsInternal: TErreurStore<THttpErreurDetailsData> =
+  createErreurStore<THttpErreurDetailsData>();
 
 export const HttpErreurDetails = HttpErreurDetailsInternal.asReadonly;
 
-export function createUnauthorized(reason?: string) {
+export function createUnauthorized(reason?: string): Error {
   return HttpErreurDetailsInternal.setAndReturn(
     createHttpErreur("Unauthorized", "Unauthorized"),
     {
@@ -66,14 +69,14 @@ export function createUnauthorized(reason?: string) {
   );
 }
 
-export function createNotFound() {
+export function createNotFound(): Error {
   return HttpErreurDetailsInternal.setAndReturn(
     createHttpErreur("NotFound", "Not Found"),
     { type: "NotFound" },
   );
 }
 
-export function createNotAcceptable() {
+export function createNotAcceptable(): Error {
   return HttpErreurDetailsInternal.setAndReturn(
     createHttpErreur("NotAcceptable", "Not Acceptable"),
     {
@@ -82,7 +85,7 @@ export function createNotAcceptable() {
   );
 }
 
-export function createBadRequest(message?: string) {
+export function createBadRequest(message?: string): Error {
   return HttpErreurDetailsInternal.setAndReturn(
     createHttpErreur("BadRequest", message ?? "Bad Request"),
     {
@@ -92,7 +95,7 @@ export function createBadRequest(message?: string) {
   );
 }
 
-export function createForbidden(reason?: string) {
+export function createForbidden(reason?: string): Error {
   return HttpErreurDetailsInternal.setAndReturn(
     createHttpErreur("Forbidden", "Forbidden"),
     {
@@ -102,7 +105,9 @@ export function createForbidden(reason?: string) {
   );
 }
 
-export function createInternalServerError(messageOrCause?: string | Error) {
+export function createInternalServerError(
+  messageOrCause?: string | Error,
+): Error {
   return HttpErreurDetailsInternal.setAndReturn(
     createHttpErreur(
       "InternalServerError",
@@ -115,7 +120,7 @@ export function createInternalServerError(messageOrCause?: string | Error) {
   );
 }
 
-export function createServerDidNotRespond() {
+export function createServerDidNotRespond(): Error {
   return HttpErreurDetailsInternal.setAndReturn(
     createHttpErreur("InternalServerError", "Server did not respond"),
     {
@@ -124,7 +129,7 @@ export function createServerDidNotRespond() {
   );
 }
 
-export function createTooManyRequests(reason?: string) {
+export function createTooManyRequests(reason?: string): Error {
   return HttpErreurDetailsInternal.setAndReturn(
     createHttpErreur("TooManyRequests"),
     {

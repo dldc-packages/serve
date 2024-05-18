@@ -4,7 +4,10 @@ export type LimitStrategyReturn<T> = {
   expireAt: number | null;
 };
 
-export type LimitStrategy<T> = (prev: T | undefined, t: number) => LimitStrategyReturn<T>;
+export type LimitStrategy<T> = (
+  prev: T | undefined,
+  t: number,
+) => LimitStrategyReturn<T>;
 
 export const LimitStrategy = {
   MaxCount,
@@ -23,7 +26,10 @@ function MaxCount(max: number): LimitStrategy<{ count: number }> {
   };
 }
 
-function MaxByPeriod(max: number, period: number): LimitStrategy<{ count: number; periodEnd: number }> {
+function MaxByPeriod(
+  max: number,
+  period: number,
+): LimitStrategy<{ count: number; periodEnd: number }> {
   return (prev, t) => {
     const periodEnded = prev && prev.periodEnd < t;
     if (!prev || periodEnded) {
@@ -105,7 +111,12 @@ function Penalize(options: PenalizeOptions): LimitStrategy<PenalizeState> {
     }
     const nextCount = prev.count + 1;
     return {
-      next: { count: nextCount, periodEnd: prev.periodEnd, penalty: 0, penaltyEnd: 0 },
+      next: {
+        count: nextCount,
+        periodEnd: prev.periodEnd,
+        penalty: 0,
+        penaltyEnd: 0,
+      },
       allowed: true,
       expireAt: null,
     };

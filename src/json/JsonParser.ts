@@ -1,10 +1,12 @@
 import { ContentType, MimeType } from "../content-type/mod.ts";
-import type { Middleware, ZenResult } from "../core/mod.ts";
+import type { Middleware, TKey, ZenResult } from "../core/mod.ts";
 import { createKey, HttpHeader, HttpMethod } from "../core/mod.ts";
 
 export type GetJsonBody = () => Promise<any>;
 
-export const GetJsonBodyKey = createKey<GetJsonBody>("JsonParser");
+export const GetJsonBodyKey: TKey<GetJsonBody> = createKey<GetJsonBody>(
+  "JsonParser",
+);
 export const GetJsonBodyKeyConsumer = GetJsonBodyKey.Consumer;
 
 export function JsonParser(): Middleware {

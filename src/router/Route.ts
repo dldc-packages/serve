@@ -19,12 +19,31 @@ export interface Route {
 
 export type Routes = Array<Route>;
 
-const withMethod =
-  (method: HttpMethod) =>
-  (pattern: IChemin | null, ...middleware: Array<Middleware>) =>
-    createRoute({ pattern, exact: true, method }, middleware);
+export type TMethodRoute = (
+  pattern: IChemin | null,
+  ...middleware: Array<Middleware>
+) => Route;
 
-export const Route = {
+function withMethod(method: HttpMethod): TMethodRoute {
+  return (pattern, ...middleware) =>
+    createRoute({ pattern, exact: true, method }, middleware);
+}
+
+export interface TRoute {
+  find: typeof find;
+  groupByPattern: typeof groupByPattern;
+  create: typeof createRoute;
+  GET: TMethodRoute;
+  POST: TMethodRoute;
+  PUT: TMethodRoute;
+  DELETE: TMethodRoute;
+  PATCH: TMethodRoute;
+  namespace: typeof namespace;
+  group: typeof group;
+  fallback: typeof fallback;
+}
+
+export const Route: TRoute = {
   find,
   groupByPattern,
   create: createRoute,
@@ -33,29 +52,36 @@ export const Route = {
   PUT: withMethod(HttpMethod.PUT),
   DELETE: withMethod(HttpMethod.DELETE),
   PATCH: withMethod(HttpMethod.PATCH),
-  namespace: (pattern: IChemin | string, routes: Routes): Routes => {
-    return routes.map(
-      (route): Route => ({
-        ...route,
-        pattern: route.pattern === null
-          ? chemin(pattern)
-          : chemin(pattern, route.pattern),
-      }),
-    );
-  },
-  group: (
-    middlewares: Middleware | Array<Middleware>,
-    routes: Routes,
-  ): Routes => {
-    const middleware = resolveMiddleware(middlewares);
-    return routes.map((route): Route => ({
-      ...route,
-      middleware: compose(middleware, route.middleware),
-    }));
-  },
-  fallback: (...middlewares: Array<Middleware>): Route =>
-    createRoute({ exact: false, isFallback: true }, middlewares),
+  namespace,
+  group,
+  fallback,
 };
+
+function fallback(...middlewares: Array<Middleware>): Route {
+  return createRoute({ exact: false, isFallback: true }, middlewares);
+}
+
+function namespace(pattern: IChemin | string, routes: Routes): Routes {
+  return routes.map(
+    (route): Route => ({
+      ...route,
+      pattern: route.pattern === null
+        ? chemin(pattern)
+        : chemin(pattern, route.pattern),
+    }),
+  );
+}
+
+function group(
+  middlewares: Middleware | Array<Middleware>,
+  routes: Routes,
+): Routes {
+  const middleware = resolveMiddleware(middlewares);
+  return routes.map((route): Route => ({
+    ...route,
+    middleware: compose(middleware, route.middleware),
+  }));
+}
 
 function createRoute(
   {

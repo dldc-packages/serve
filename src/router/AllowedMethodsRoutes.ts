@@ -1,10 +1,12 @@
-import type { Middleware, ZenResult } from "../core/mod.ts";
+import type { Middleware, TKey, ZenResult } from "../core/mod.ts";
 import { compose, createKey, HttpMethod } from "../core/mod.ts";
 import type { Routes } from "./Route.ts";
 import { Route } from "./Route.ts";
 import { withAllowedMethods } from "./withAllowedMethods.ts";
 
-export const RouterAllowedMethodsKey = createKey<Set<HttpMethod>>(
+export const RouterAllowedMethodsKey: TKey<Set<HttpMethod>> = createKey<
+  Set<HttpMethod>
+>(
   "RouterAllowedMethods",
 );
 export const RouterAllowedMethodsConsumer = RouterAllowedMethodsKey.Consumer;

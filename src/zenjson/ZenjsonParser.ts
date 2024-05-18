@@ -1,11 +1,13 @@
 import * as zen from "@dldc/zenjson";
-import type { Middleware } from "../core/mod.ts";
+import type { Middleware, TKey } from "../core/mod.ts";
 import { createKey } from "../core/mod.ts";
 import { GetJsonBodyKeyConsumer } from "../json/mod.ts";
 
 export type GetZenjsonBody = () => Promise<any>;
 
-export const GetZenjsonBodyKey = createKey<GetZenjsonBody>("ZenjsonParser");
+export const GetZenjsonBodyKey: TKey<GetZenjsonBody> = createKey<
+  GetZenjsonBody
+>("ZenjsonParser");
 export const GetZenjsonBodyKeyConsumer = GetZenjsonBodyKey.Consumer;
 
 interface IZenjsonConfig {
@@ -13,7 +15,9 @@ interface IZenjsonConfig {
   restore?: typeof zen.restore;
 }
 
-export const ZenjsonConfig = createKey<IZenjsonConfig>("ZenjsonConfig");
+export const ZenjsonConfig: TKey<IZenjsonConfig> = createKey<IZenjsonConfig>(
+  "ZenjsonConfig",
+);
 
 export function ZenjsonParser(options: IZenjsonConfig = {}): Middleware {
   const restore = options.restore ?? zen.restore;

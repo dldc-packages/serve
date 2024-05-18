@@ -5,7 +5,9 @@ import { CorsPreflightRoutes } from "./CorsPreflightRoutes.ts";
 import type { Routes } from "./Route.ts";
 import { Route } from "./Route.ts";
 
-export function CorsRoutes(config: CorsPreflightConfig = {}) {
+export type TRoutesWraper = (routes: Routes) => Routes;
+
+export function CorsRoutes(config: CorsPreflightConfig = {}): TRoutesWraper {
   return (routes: Routes): Routes => {
     const withCorsActual = routes.map((route) => {
       const { pattern, exact, method, middleware, isFallback } = route;

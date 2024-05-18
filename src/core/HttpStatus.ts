@@ -108,28 +108,46 @@ const ALL_STATUS_BY_NAME: { [K in HttpStatusName]: HttpStatusObject } = Object
     ) => [infos.name, { code: parseInt(code), ...infos }]),
   ) as any;
 
+interface THttpStatus {
+  getMessage: typeof getMessage;
+  fromCode: typeof fromCode;
+  fromName: typeof fromName;
+  isEmpty: typeof isEmpty;
+  isError: typeof isError;
+}
+
 export const HttpStatus = {
-  getMessage(code: HttpStatusCode, details?: string): HttpStatusMessage {
-    return ALL_STATUS[code].message + (details ? `: ${details}` : "");
-  },
-  fromCode(code: HttpStatusCode): HttpStatusObject {
-    const obj = ALL_STATUS_BY_CODE[code];
-    if (!obj) {
-      throw new Error(`Unknown status code: ${code}`);
-    }
-    return obj;
-  },
-  fromName(name: HttpStatusName): HttpStatusObject {
-    const obj = ALL_STATUS_BY_NAME[name];
-    if (!obj) {
-      throw new Error(`Unknown status name: ${name}`);
-    }
-    return obj;
-  },
-  isEmpty(code: number): boolean {
-    return (code >= 100 && code < 200) || [204, 205, 304].indexOf(code) >= 0;
-  },
-  isError(code: number): boolean {
-    return code >= 400;
-  },
+  getMessage,
+  fromCode,
+  fromName,
+  isEmpty,
+  isError,
 };
+
+function getMessage(code: HttpStatusCode, details?: string): HttpStatusMessage {
+  return ALL_STATUS[code].message + (details ? `: ${details}` : "");
+}
+
+function fromCode(code: HttpStatusCode): HttpStatusObject {
+  const obj = ALL_STATUS_BY_CODE[code];
+  if (!obj) {
+    throw new Error(`Unknown status code: ${code}`);
+  }
+  return obj;
+}
+
+function fromName(name: HttpStatusName): HttpStatusObject {
+  const obj = ALL_STATUS_BY_NAME[name];
+  if (!obj) {
+    throw new Error(`Unknown status name: ${name}`);
+  }
+  return obj;
+}
+
+function isEmpty(code: number): boolean {
+  return (code >= 100 && code < 200) || [204, 205, 304].indexOf(code) >= 0;
+}
+
+function isError(code: number): boolean {
+  return code >= 400;
+}
