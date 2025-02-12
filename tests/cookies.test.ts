@@ -19,7 +19,7 @@ Deno.test("should set the Set-Cookie header", async () => {
       value: "T55YTRR55554",
     }]);
   });
-  const { close, url, fetch } = mountServer(app);
+  const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
   expectHeaders(
     res,
@@ -39,7 +39,7 @@ Deno.test("should set the Set-Cookie header using Manager", async () => {
       return noContent();
     }),
   );
-  const { close, url, fetch } = mountServer(app);
+  const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
   expectHeaders(
     res,
@@ -61,7 +61,7 @@ Deno.test("should set two Set-Cookie header using Manager", async () => {
       return noContent();
     }),
   );
-  const { close, url, fetch } = mountServer(app);
+  const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
   expectHeaders(
     res,
@@ -83,7 +83,7 @@ Deno.test("should return the same result as koa", async () => {
     }]);
   });
 
-  const { close, url, fetch } = mountServer(app);
+  const { close, url, fetch } = await mountServer(app);
 
   const res = await fetch(url);
 
@@ -107,7 +107,7 @@ Deno.test("should return the same result as koa when deleting cookie", async () 
       expires: new Date(0),
     }]);
   });
-  const { close, url, fetch } = mountServer(app);
+  const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
 
   expectHeaders(
@@ -132,7 +132,7 @@ Deno.test("Cookie manager should set and delete cookies", async () => {
     }),
   );
 
-  const { close, url, fetch } = mountServer(app);
+  const { close, url, fetch } = await mountServer(app);
   const res = await fetch(url);
 
   expectHeaders(
@@ -162,7 +162,7 @@ Deno.test("Cookies should not be set on error response", async () => {
       },
     ),
   );
-  const { url, close, fetch } = mountServer(app);
+  const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url);
   expectHeaders(
     res,

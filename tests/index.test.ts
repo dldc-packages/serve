@@ -20,7 +20,7 @@ Deno.test("create hanlder without crashing", () => {
 
 Deno.test("simple text response", async () => {
   const handler = createHandler(() => ZenResponse.create("Hey"));
-  const { url, close, fetch } = mountServer(handler);
+  const { url, close, fetch } = await mountServer(handler);
   const res = await fetch(url);
 
   expect(await res.text()).toBe("Hey");
@@ -40,7 +40,7 @@ Deno.test("simple text response", async () => {
 
 Deno.test("send two requests", async () => {
   const handler = createHandler(() => ZenResponse.create("Hey"));
-  const { url, close, fetch } = mountServer(handler);
+  const { url, close, fetch } = await mountServer(handler);
 
   const res = await fetch(url);
   expectHeaders(
@@ -68,7 +68,7 @@ Deno.test("send two requests", async () => {
 
 Deno.test("response to arbitrary path", async () => {
   const handler = createHandler(() => ZenResponse.create("Hey"));
-  const { url, close, fetch } = mountServer(handler);
+  const { url, close, fetch } = await mountServer(handler);
 
   const res = await fetch(`${url}${"/some/path"}`);
   expectHeaders(
@@ -87,7 +87,7 @@ Deno.test("response to arbitrary path", async () => {
 
 Deno.test("response to post method", async () => {
   const handler = createHandler(() => ZenResponse.create("Hey"));
-  const { url, close, fetch } = mountServer(handler);
+  const { url, close, fetch } = await mountServer(handler);
 
   const res = await fetch(url, { method: HttpMethod.POST });
   expectHeaders(
@@ -106,7 +106,7 @@ Deno.test("response to post method", async () => {
 
 Deno.test("head request return 204 & empty body", async () => {
   const handler = createHandler(() => noContent());
-  const { url, close, fetch } = mountServer(handler);
+  const { url, close, fetch } = await mountServer(handler);
 
   const res = await fetch(url, {
     method: HttpMethod.HEAD,
@@ -128,7 +128,7 @@ Deno.test("throw HttpError return an error", async () => {
       throw createNotFound();
     }),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
   const res = await fetch(url);
   expectHeaders(
     res,
@@ -154,7 +154,7 @@ Deno.test("throw return an error", async () => {
       },
     ),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
   const res = await fetch(url);
   expectHeaders(
     res,

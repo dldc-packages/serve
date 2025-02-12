@@ -40,7 +40,7 @@ Deno.test("parse JSON body", async () => {
       },
     ),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
   const res = await fetch(url, {
     method: HttpMethod.POST,
     body: JSON.stringify({ name: "Perceval", alias: "Provençal le Gaulois" }),
@@ -70,7 +70,7 @@ Deno.test("JsonPackage handle JsonResponse", async () => {
       return json({ foo: "bar" });
     }),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
   const res5 = await fetch(url);
   expectHeaders(
     res5,
@@ -88,7 +88,7 @@ Deno.test("JsonPackage handle JsonResponse", async () => {
 
 Deno.test("JsonPackage handle no response", async () => {
   const handler = createHandler(compose(JsonPackage()));
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
 
   const res1 = await fetch(url);
   expectHeaders(
@@ -116,7 +116,7 @@ Deno.test("JsonPackage convert text to Json", async () => {
       return json("Hello");
     }),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
 
   const res2 = await fetch(url);
   expectHeaders(
@@ -140,7 +140,7 @@ Deno.test("JsonPackage handle HttpError and convert them to json", async () => {
       throw createNotFound();
     }),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
 
   const res3 = await fetch(url);
   expectHeaders(
@@ -168,7 +168,7 @@ Deno.test("JsonPackage handle Error and convert them to json", async () => {
       throw new Error("Oops");
     }),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
 
   const res4 = await fetch(url);
   expectHeaders(
@@ -197,7 +197,7 @@ Deno.test("JsonPackage works with Cookies", async () => {
       return json({ foo: "bar" });
     }),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
 
   const res = await fetch(url);
   expectHeaders(
@@ -223,7 +223,7 @@ Deno.test("JsonPackage can read Json body", async () => {
       return json(body);
     }),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
 
   const res = await fetch(url, {
     headers: { "content-type": "application/json" },
@@ -253,7 +253,7 @@ Deno.test("JsonPackage can read Json with Axio PUT", async () => {
       return json(body);
     }),
   );
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
 
   const res = await fetch(url, {
     headers: {

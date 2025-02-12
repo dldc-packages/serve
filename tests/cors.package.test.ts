@@ -27,7 +27,7 @@ Deno.test("create a server with CorsPackage does not throw", () => {
 
 Deno.test("response to actual request", async () => {
   const app = createCorsHandler();
-  const { url, close, fetch } = mountServer(app);
+  const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url, {
     headers: {
       Origin: "http://api.myapp.com",
@@ -50,7 +50,7 @@ Deno.test("response to actual request", async () => {
 
 Deno.test("response to preflight request", async () => {
   const app = createCorsHandler();
-  const { url, close, fetch } = mountServer(app);
+  const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url, {
     method: "OPTIONS",
     headers: {
@@ -86,7 +86,7 @@ Deno.test("handle error", async () => {
       },
     ),
   );
-  const { url, close, fetch } = mountServer(handler);
+  const { url, close, fetch } = await mountServer(handler);
   const res = await fetch(url, {
     headers: {
       Origin: "http://api.myapp.com",
@@ -113,7 +113,7 @@ Deno.test("handle error on preflight", async () => {
       throw createNotFound();
     }),
   );
-  const { url, close, fetch } = mountServer(handler);
+  const { url, close, fetch } = await mountServer(handler);
   const res = await fetch(url, {
     method: "OPTIONS",
     headers: {

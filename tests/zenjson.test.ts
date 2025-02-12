@@ -22,7 +22,7 @@ Deno.test("Send zenjson response", async () => {
     ),
   );
 
-  const { close, url, fetch } = mountServer(handler);
+  const { close, url, fetch } = await mountServer(handler);
 
   const res = await fetch(url);
   expectHeaders(

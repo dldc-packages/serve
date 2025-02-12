@@ -1,3 +1,4 @@
+import { gunzip, inflate } from "@deno-library/compress";
 import { assert } from "@std/assert";
 import { expect } from "@std/expect";
 import {
@@ -8,7 +9,6 @@ import {
   json,
   ZenResponse,
 } from "../mod.ts";
-import { gunzip, inflate } from "./deps.ts";
 import { expectHeaders } from "./utils/expectHeaders.ts";
 import { request } from "./utils/request.ts";
 import { streamSizeReader } from "./utils/streamSizeReader.ts";

@@ -3,11 +3,13 @@
   "version": "3.2.0",
   "exports": "./mod.ts",
   "imports": {
+    "@deno-library/compress": "jsr:@deno-library/compress@^0.5.5",
     "@dldc/chemin": "jsr:@dldc/chemin@^12.0.0",
     "@dldc/compose": "jsr:@dldc/compose@^6.0.2",
     "@dldc/erreur": "jsr:@dldc/erreur@^7.1.1",
     "@dldc/stack": "jsr:@dldc/stack@^7.0.0",
     "@dldc/zenjson": "jsr:@dldc/zenjson@^3.0.1",
+    "@openjs/port-free": "jsr:@openjs/port-free@^1.0.0",
     "@std/assert": "jsr:@std/assert@^1.0.11",
     "@std/expect": "jsr:@std/expect@^1.0.13",
     "@std/http": "jsr:@std/http@^1.0.13"

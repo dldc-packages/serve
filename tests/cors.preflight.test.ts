@@ -32,7 +32,7 @@ Deno.test("6.2.1 Does not set headers if Origin is missing", async () => {
   const app = createCorsHandler({
     allowOrigin: ["http://api.myapp.com", "http://www.myapp.com"],
   });
-  const { url, close, fetch } = mountServer(app);
+  const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url, {
     headers: {},
   });
@@ -54,7 +54,7 @@ Deno.test("6.2.2 Does not set headers if Origin does not match", async () => {
   const app = createCorsHandler({
     allowOrigin: ["http://api.myapp.com", "http://www.myapp.com"],
   });
-  const { url, close, fetch } = mountServer(app);
+  const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -79,7 +79,7 @@ Deno.test("6.2.3 Does not set headers if Access-Control-Request-Method is missin
   const app = createCorsHandler({
     allowOrigin: ["http://api.myapp.com", "http://www.myapp.com"],
   });
-  const { url, close, fetch } = mountServer(app);
+  const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -112,7 +112,7 @@ Deno.test("6.2.6 Does not set headers if Access-Control-Request-Headers does not
     allowOrigin: ["http://api.myapp.com", "http://www.myapp.com"],
     allowHeaders: ["API-Token"],
   });
-  const { url, close, fetch } = mountServer(app);
+  const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -138,7 +138,7 @@ Deno.test("6.2.7 Set the Allow-Origin header if it matches", async () => {
   const app = createCorsHandler({
     allowOrigin: ["http://api.myapp.com", "http://www.myapp.com"],
   });
-  const { url, close, fetch } = mountServer(app);
+  const { url, close, fetch } = await mountServer(app);
   const res = await fetch(url, {
     method: "OPTIONS",
     headers: {

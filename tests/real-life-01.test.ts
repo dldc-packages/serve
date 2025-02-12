@@ -47,7 +47,7 @@ Deno.test("real life", async () => {
     ),
   );
 
-  const { url, close, fetch } = mountServer(handler);
+  const { url, close, fetch } = await mountServer(handler);
 
   const res = await fetch(url);
   expectHeaders(

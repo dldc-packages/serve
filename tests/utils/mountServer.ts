@@ -1,18 +1,22 @@
-import { getAvailablePortSync } from "../deps.ts";
+import { getPort } from "@openjs/port-free";
 
 interface MountedServer {
   url: string;
   port: number;
   close: () => Promise<void>;
-  fetch: typeof fetch;
+  fetch: (
+    input: string | URL | globalThis.Request,
+    init?: RequestInit,
+  ) => Promise<Response>;
 }
 
-export function mountServer(handler: Deno.ServeHandler): MountedServer {
-  const port = getAvailablePortSync();
+export async function mountServer(
+  handler: Deno.ServeHandler,
+): Promise<MountedServer> {
+  const port = await getPort();
   if (!port) {
     throw new Error("No available port");
   }
-  console.log(`Mounting server on port ${port}`);
   const server = Deno.serve({
     port,
     onListen: () => {},
