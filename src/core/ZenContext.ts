@@ -15,7 +15,7 @@ export class ZenContext extends Stack {
     return new ZenContext().with(...keys);
   }
 
-  protected instantiate(stackCore: TStackCoreValue): this {
+  protected override instantiate(stackCore: TStackCoreValue): this {
     return new ZenContext(stackCore) as any;
   }
 

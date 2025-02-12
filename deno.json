@@ -6,18 +6,19 @@
     "@dldc/chemin": "jsr:@dldc/chemin@^12.0.0",
     "@dldc/compose": "jsr:@dldc/compose@^6.0.2",
     "@dldc/erreur": "jsr:@dldc/erreur@^7.1.1",
-    "@dldc/stack": "jsr:@dldc/stack@^6.0.2",
+    "@dldc/stack": "jsr:@dldc/stack@^7.0.0",
     "@dldc/zenjson": "jsr:@dldc/zenjson@^3.0.1",
-    "@std/assert": "jsr:@std/assert@^0.225.1",
-    "@std/expect": "jsr:@std/expect@^0.224.0",
-    "@std/http": "jsr:@std/http@^0.224.0"
+    "@std/assert": "jsr:@std/assert@^1.0.11",
+    "@std/expect": "jsr:@std/expect@^1.0.13",
+    "@std/http": "jsr:@std/http@^1.0.13"
   },
   "tasks": {
     "test:run": "deno test -A",
     "test:watch": "deno test -A --watch",
     "bump": "deno run -A jsr:@mys/bump@1",
     "update": "deno run --allow-read=. --allow-write=. --allow-net https://deno.land/x/udd@0.8.2/main.ts *.ts deno.json",
-    "check": "deno fmt --check . && deno lint . && deno task test:run"
+    "check": "deno fmt --check . && deno lint . && deno task test:run",
+    "check-deps": "deno run -A jsr:@check/deps"
   },
   "lint": {
     "rules": {

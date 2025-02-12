@@ -5,9 +5,10 @@ const BodyKey: TKey<BodyInit> = createKey<BodyInit>("Body");
 const HeadersKey: TKey<Headers> = createKey<Headers>("Headers");
 const StatusKey: TKey<number> = createKey<number>("Status");
 const StatusTextKey: TKey<string> = createKey<string>("StatusText");
-const RedirectKey: TKey<{ url: string; status: number }> = createKey<
-  { url: string; status: number }
->("Redirect");
+const RedirectKey: TKey<{ url: string; status: number }> = createKey<{
+  url: string;
+  status: number;
+}>("Redirect");
 
 export class ZenResponse extends Stack {
   static create(body?: BodyInit | null, init?: ResponseInit): ZenResponse {
@@ -34,12 +35,12 @@ export class ZenResponse extends Stack {
   static StatusTextKey = StatusTextKey;
   static RedirectKey = RedirectKey;
 
-  protected instantiate(stackCore: TStackCoreValue): this {
+  protected override instantiate(stackCore: TStackCoreValue): this {
     return new ZenResponse(stackCore) as any;
   }
 
   get body(): BodyInit | null {
-    return this.get(BodyKey.Consumer);
+    return this.get(BodyKey.Consumer) ?? null;
   }
 
   get headers(): Headers {
