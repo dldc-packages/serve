@@ -12,6 +12,7 @@ export function mountServer(handler: Deno.ServeHandler): MountedServer {
   if (!port) {
     throw new Error("No available port");
   }
+  console.log(`Mounting server on port ${port}`);
   const server = Deno.serve({
     port,
     onListen: () => {},
