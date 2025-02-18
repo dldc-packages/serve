@@ -1,6 +1,6 @@
 {
   "name": "@dldc/serve",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "exports": "./mod.ts",
   "imports": {
     "@deno-library/compress": "jsr:@deno-library/compress@^0.5.5",
