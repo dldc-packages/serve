@@ -148,7 +148,7 @@ Deno.test("throw return an error", async () => {
   const handler = createHandler(
     compose(
       HttpErrorToTextResponse(),
-      ErrorToHttpError({ logOnError: false }),
+      ErrorToHttpError(),
       () => {
         throw new Error("Oops");
       },
@@ -156,16 +156,17 @@ Deno.test("throw return an error", async () => {
   );
   const { close, url, fetch } = await mountServer(handler);
   const res = await fetch(url);
+  expect(await res.text()).toEqual("Error 500 Internal Server Error");
   expectHeaders(
     res,
     `
     HTTP/1.1 500 Internal Server Error
-    Content-Length: 14
+    Content-Length: 31
     Content-Type: text/plain;charset=UTF-8
     Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
     Vary: Accept-Encoding
   `,
   );
-  expect(await res.text()).toEqual("Error 500 Oops");
+
   await close();
 });

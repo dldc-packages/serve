@@ -3,12 +3,15 @@ import type { ZenContext, ZenResponse } from "../core/mod.ts";
 import { json } from "../json/mod.ts";
 import { ZenjsonConfig } from "./ZenjsonParser.ts";
 
-interface IOptions extends ResponseInit {
+export interface TZenjsonOptions extends ResponseInit {
   sanitize?: typeof defaultSanitize;
   context?: ZenContext;
 }
 
-export function zenjson<Data>(data: Data, options: IOptions = {}): ZenResponse {
+export function zenjson<Data>(
+  data: Data,
+  options: TZenjsonOptions = {},
+): ZenResponse {
   const sanitize = (() => {
     if (options.context) {
       const config = options.context.get(ZenjsonConfig.Consumer);

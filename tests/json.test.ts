@@ -15,6 +15,7 @@ import {
   InvalidResponseToHttpError,
   json,
   JsonParser,
+  markInternalServerError,
 } from "../mod.ts";
 import { expectHeaders } from "./utils/expectHeaders.ts";
 import { mountServer } from "./utils/mountServer.ts";
@@ -22,7 +23,7 @@ import { mountServer } from "./utils/mountServer.ts";
 function JsonPackage() {
   return compose(
     HttpErrorToJsonResponse({ logOnError: false }),
-    ErrorToHttpError({ logOnError: false }),
+    ErrorToHttpError(),
     InvalidResponseToHttpError({ logOnError: false }),
     JsonParser(),
   );
@@ -32,7 +33,7 @@ Deno.test("parse JSON body", async () => {
   const handler = createHandler(
     compose(
       HttpErrorToTextResponse(),
-      ErrorToHttpError({ logOnError: false }),
+      ErrorToHttpError(),
       JsonParser(),
       async (ctx) => {
         const body = await ctx.getOrFail(GetJsonBodyKeyConsumer)();
@@ -91,6 +92,11 @@ Deno.test("JsonPackage handle no response", async () => {
   const { close, url, fetch } = await mountServer(handler);
 
   const res1 = await fetch(url);
+  expect(await res1.json()).toEqual({
+    code: 500,
+    name: "InternalServerError",
+    message: "Server did not respond",
+  });
   expectHeaders(
     res1,
     `
@@ -101,11 +107,6 @@ Deno.test("JsonPackage handle no response", async () => {
     Vary: Accept-Encoding
   `,
   );
-  expect(await res1.json()).toEqual({
-    code: 500,
-    name: "InternalServerError",
-    message: "Server did not respond",
-  });
 
   await close();
 });
@@ -171,6 +172,39 @@ Deno.test("JsonPackage handle Error and convert them to json", async () => {
   const { close, url, fetch } = await mountServer(handler);
 
   const res4 = await fetch(url);
+  expect(await res4.json()).toEqual({
+    code: 500,
+    name: "InternalServerError",
+    message: "Internal Server Error",
+  });
+  expectHeaders(
+    res4,
+    `
+    HTTP/1.1 500 Internal Server Error
+    Content-Length: 75
+    Content-Type: application/json; charset=utf-8
+    Date: Xxx, XX Xxx XXXX XX:XX:XX GMT
+    Vary: Accept-Encoding
+  `,
+  );
+
+  await close();
+});
+
+Deno.test("JsonPackage handle http Error and convert them to json", async () => {
+  const handler = createHandler(
+    compose(JsonPackage(), () => {
+      throw markInternalServerError(new Error("Oops"), "Oops");
+    }),
+  );
+  const { close, url, fetch } = await mountServer(handler);
+
+  const res4 = await fetch(url);
+  expect(await res4.json()).toEqual({
+    code: 500,
+    name: "InternalServerError",
+    message: "Oops",
+  });
   expectHeaders(
     res4,
     `
@@ -181,11 +215,6 @@ Deno.test("JsonPackage handle Error and convert them to json", async () => {
     Vary: Accept-Encoding
   `,
   );
-  expect(await res4.json()).toEqual({
-    code: 500,
-    name: "InternalServerError",
-    message: "Oops",
-  });
 
   await close();
 });

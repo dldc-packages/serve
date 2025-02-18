@@ -6,43 +6,54 @@ import type {
 } from "./HttpStatus.ts";
 import { HttpStatus } from "./HttpStatus.ts";
 
-export interface IHttpErreurData {
+export interface THttpErreurData {
   name: HttpStatusName;
   code: HttpStatusCode;
   message: HttpStatusMessage;
 }
 
-const HttpErreurInternal: TErreurStore<IHttpErreurData> = createErreurStore<
-  IHttpErreurData
+const HttpErreurInternal: TErreurStore<THttpErreurData> = createErreurStore<
+  THttpErreurData
 >();
 
 export const HttpErreur = HttpErreurInternal.asReadonly;
 
+export function markHttpErreur(
+  error: unknown,
+  codeOrName: HttpStatusCode | HttpStatusName = 500,
+  message?: HttpStatusMessage,
+): Error {
+  return HttpErreurInternal.setAndReturn(
+    error,
+    resolveHttpErrorParams(codeOrName, message),
+  );
+}
+
 export function createHttpErreur(
   codeOrName: HttpStatusCode | HttpStatusName = 500,
-  messageOrCause?: HttpStatusMessage | Error,
+  message?: HttpStatusMessage,
+  cause?: Error,
 ): Error {
+  const httpError = resolveHttpErrorParams(codeOrName, message);
+  const error = new Error(`${httpError.message} (${httpError.name})`, {
+    cause,
+  });
+  return HttpErreurInternal.setAndReturn(error, httpError);
+}
+
+function resolveHttpErrorParams(
+  codeOrName: HttpStatusCode | HttpStatusName = 500,
+  message?: HttpStatusMessage,
+): THttpErreurData {
   const code: HttpStatusCode = typeof codeOrName === "number"
     ? codeOrName
     : HttpStatus.fromName(codeOrName).code;
   const status = HttpStatus.fromCode(code);
-  const messageStr = messageOrCause
-    ? typeof messageOrCause === "string"
-      ? messageOrCause
-      : messageOrCause.message
-    : undefined;
-  const fullMessage = `${code} ${status.name}${
-    messageStr ? `: ${messageStr}` : ""
-  }`;
-  const error = messageOrCause instanceof Error
-    ? messageOrCause
-    : new Error(fullMessage);
-  return HttpErreurInternal.setAndReturn(error, {
-    code,
-    name: status.name,
-    message: messageStr ?? status.message,
-  });
+  const messageResolved = message ?? status.message;
+  return { code, name: status.name, message: messageResolved };
 }
+
+/** */
 
 export type THttpErreurDetailsData =
   | { type: "Unauthorized"; reason?: string }
@@ -59,82 +70,124 @@ const HttpErreurDetailsInternal: TErreurStore<THttpErreurDetailsData> =
 
 export const HttpErreurDetails = HttpErreurDetailsInternal.asReadonly;
 
-export function createUnauthorized(reason?: string): Error {
+export function markUnauthorized(error: unknown, reason?: string): Error {
   return HttpErreurDetailsInternal.setAndReturn(
-    createHttpErreur("Unauthorized", "Unauthorized"),
-    {
-      type: "Unauthorized",
-      reason,
-    },
+    markHttpErreur(error, "Unauthorized", "Unauthorized"),
+    { type: "Unauthorized", reason },
   );
 }
 
-export function createNotFound(): Error {
+export function createUnauthorized(reason?: string, cause?: Error): Error {
   return HttpErreurDetailsInternal.setAndReturn(
-    createHttpErreur("NotFound", "Not Found"),
+    createHttpErreur("Unauthorized", "Unauthorized", cause),
+    { type: "Unauthorized", reason },
+  );
+}
+
+export function markNotFound(error: unknown): Error {
+  return HttpErreurDetailsInternal.setAndReturn(
+    markHttpErreur(error, "NotFound", "Not Found"),
     { type: "NotFound" },
   );
 }
 
-export function createNotAcceptable(): Error {
+export function createNotFound(cause?: Error): Error {
   return HttpErreurDetailsInternal.setAndReturn(
-    createHttpErreur("NotAcceptable", "Not Acceptable"),
-    {
-      type: "NotAcceptable",
-    },
+    createHttpErreur("NotFound", "Not Found", cause),
+    { type: "NotFound" },
   );
 }
 
-export function createBadRequest(message?: string): Error {
+export function markNotAcceptable(error: unknown): Error {
   return HttpErreurDetailsInternal.setAndReturn(
-    createHttpErreur("BadRequest", message ?? "Bad Request"),
-    {
-      type: "BadRequest",
-      message,
-    },
+    markHttpErreur(error, "NotAcceptable", "Not Acceptable"),
+    { type: "NotAcceptable" },
   );
 }
 
-export function createForbidden(reason?: string): Error {
+export function createNotAcceptable(cause?: Error): Error {
   return HttpErreurDetailsInternal.setAndReturn(
-    createHttpErreur("Forbidden", "Forbidden"),
-    {
-      type: "Forbidden",
-      reason,
-    },
+    createHttpErreur("NotAcceptable", "Not Acceptable", cause),
+    { type: "NotAcceptable" },
+  );
+}
+
+export function markBadRequest(error: unknown, message?: string): Error {
+  return HttpErreurDetailsInternal.setAndReturn(
+    markHttpErreur(error, "BadRequest", message ?? "Bad Request"),
+    { type: "BadRequest", message },
+  );
+}
+
+export function createBadRequest(message?: string, cause?: Error): Error {
+  return HttpErreurDetailsInternal.setAndReturn(
+    createHttpErreur("BadRequest", message ?? "Bad Request", cause),
+    { type: "BadRequest", message },
+  );
+}
+
+export function markForbidden(error: unknown, reason?: string): Error {
+  return HttpErreurDetailsInternal.setAndReturn(
+    markHttpErreur(error, "Forbidden", "Forbidden"),
+    { type: "Forbidden", reason },
+  );
+}
+
+export function createForbidden(reason?: string, cause?: Error): Error {
+  return HttpErreurDetailsInternal.setAndReturn(
+    createHttpErreur("Forbidden", "Forbidden", cause),
+    { type: "Forbidden", reason },
+  );
+}
+
+export function markInternalServerError(
+  error: unknown,
+  message?: string,
+): Error {
+  return HttpErreurDetailsInternal.setAndReturn(
+    markHttpErreur(error, "InternalServerError", message),
+    { type: "InternalServerError", message },
   );
 }
 
 export function createInternalServerError(
-  messageOrCause?: string | Error,
+  message?: string,
+  cause?: Error,
 ): Error {
   return HttpErreurDetailsInternal.setAndReturn(
-    createHttpErreur(
-      "InternalServerError",
-      messageOrCause ?? "Internal Server Error",
-    ),
-    {
-      type: "InternalServerError",
-      message: messageOrCause instanceof Error ? undefined : messageOrCause,
-    },
+    createHttpErreur("InternalServerError", message, cause),
+    { type: "InternalServerError", message },
   );
 }
 
-export function createServerDidNotRespond(): Error {
+export function markServerDidNotRespond(
+  error: unknown,
+): Error {
   return HttpErreurDetailsInternal.setAndReturn(
-    createHttpErreur("InternalServerError", "Server did not respond"),
-    {
-      type: "ServerDidNotRespond",
-    },
+    markHttpErreur(error, "InternalServerError", "Server did not respond"),
+    { type: "ServerDidNotRespond" },
   );
 }
 
-export function createTooManyRequests(reason?: string): Error {
+export function createServerDidNotRespond(
+  cause?: Error,
+): Error {
   return HttpErreurDetailsInternal.setAndReturn(
-    createHttpErreur("TooManyRequests"),
-    {
-      type: "TooManyRequests",
-      reason,
-    },
+    createHttpErreur("InternalServerError", "Server did not respond", cause),
+    { type: "ServerDidNotRespond" },
+  );
+}
+
+export function markTooManyRequests(error: unknown, reason?: string): Error {
+  return HttpErreurDetailsInternal.setAndReturn(
+    markHttpErreur(error, "TooManyRequests", reason),
+    { type: "TooManyRequests", reason },
+  );
+}
+
+export function createTooManyRequests(reason?: string, cause?: Error): Error {
+  return HttpErreurDetailsInternal.setAndReturn(
+    createHttpErreur("TooManyRequests", reason, cause),
+    { type: "TooManyRequests", reason },
   );
 }

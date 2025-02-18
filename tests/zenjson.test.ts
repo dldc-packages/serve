@@ -15,9 +15,9 @@ Deno.test("Send zenjson response", async () => {
   const handler = createHandler(
     compose(
       HttpErrorToZenjsonResponse({ logOnError: false }),
-      ErrorToHttpError({ logOnError: false }),
+      ErrorToHttpError(),
       () => {
-        return zenjson({ date: date, infinity: Infinity, null: null });
+        return zenjson({ date, infinity: Infinity, null: null });
       },
     ),
   );

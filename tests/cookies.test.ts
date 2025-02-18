@@ -152,7 +152,7 @@ Deno.test("Cookies should not be set on error response", async () => {
   const app = createHandler(
     compose(
       HttpErrorToTextResponse(),
-      ErrorToHttpError({ logOnError: false }),
+      ErrorToHttpError(),
       CookieManager(),
       (ctx) => {
         const manager = ctx.getOrFail(CookieManagerConsumer);

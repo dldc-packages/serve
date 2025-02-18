@@ -10,16 +10,16 @@ export const GetZenjsonBodyKey: TKey<GetZenjsonBody> = createKey<
 >("ZenjsonParser");
 export const GetZenjsonBodyKeyConsumer = GetZenjsonBodyKey.Consumer;
 
-interface IZenjsonConfig {
+interface TZenjsonConfig {
   sanitize?: typeof zen.sanitize;
   restore?: typeof zen.restore;
 }
 
-export const ZenjsonConfig: TKey<IZenjsonConfig> = createKey<IZenjsonConfig>(
+export const ZenjsonConfig: TKey<TZenjsonConfig> = createKey<TZenjsonConfig>(
   "ZenjsonConfig",
 );
 
-export function ZenjsonParser(options: IZenjsonConfig = {}): Middleware {
+export function ZenjsonParser(options: TZenjsonConfig = {}): Middleware {
   const restore = options.restore ?? zen.restore;
 
   return (ctx, next): Promise<any> => {

@@ -80,7 +80,7 @@ Deno.test("handle error", async () => {
       CorsActual(),
       CorsPreflight(),
       HttpErrorToTextResponse(),
-      ErrorToHttpError({ logOnError: false }),
+      ErrorToHttpError(),
       () => {
         throw createNotFound();
       },

@@ -26,7 +26,7 @@ Deno.test("real life 2", async () => {
       CorsPreflight(),
       HttpErrorToJsonResponse({ logOnError: false }),
       InvalidResponseToHttpError({ logOnError: false }),
-      ErrorToHttpError({ logOnError: false }),
+      ErrorToHttpError(),
       JsonParser(),
       CookieParser(),
       CookieManager(),

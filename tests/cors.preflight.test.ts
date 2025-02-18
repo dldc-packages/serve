@@ -17,7 +17,7 @@ function createCorsHandler(config: CorsPreflightConfig = {}) {
     compose(
       CorsPreflight(config),
       HttpErrorToTextResponse(),
-      ErrorToHttpError({ logOnError: false }),
+      ErrorToHttpError(),
       (ctx) => {
         if (ctx.method === HttpMethod.POST) {
           return ZenResponse.create("Hello");

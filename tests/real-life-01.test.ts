@@ -29,7 +29,7 @@ Deno.test("real life", async () => {
       CorsPreflight(),
       HttpErrorToTextResponse(),
       InvalidResponseToHttpError({ logOnError: false }),
-      ErrorToHttpError({ logOnError: false }),
+      ErrorToHttpError(),
       CookieManager(),
       Router(
         AllowedMethodsRoutes([

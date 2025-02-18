@@ -3,12 +3,12 @@ import { createKey, HttpHeader } from "../core/mod.ts";
 import { ContentEncoding } from "./ContentEnconding.ts";
 import { compress } from "./compress.ts";
 
-export interface ICompression {
+export interface TCompression {
   readonly acceptedEncoding: readonly ContentEncoding[];
   readonly usedEncoding: null | ContentEncoding;
 }
 
-export const CompressionKey: TKey<ICompression> = createKey<ICompression>(
+export const CompressionKey: TKey<TCompression> = createKey<TCompression>(
   "Compress",
 );
 export const CompressConsumer = CompressionKey.Consumer;
@@ -25,7 +25,7 @@ export function Compression(): Middleware {
         : [ContentEncoding.Identity];
 
     const usedEncoding = selectEncoding(acceptedEncoding);
-    const compressCtx: ICompression = {
+    const compressCtx: TCompression = {
       acceptedEncoding,
       usedEncoding,
     };
